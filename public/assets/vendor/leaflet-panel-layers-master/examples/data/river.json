@@ -1,0 +1,21 @@
+
+{
+    "type":"FeatureCollection",
+    "generator":"JOSM",
+    "features":[
+        {
+            "type":"Feature",
+            "properties":{
+                "source":"PCN",
+                "name":"Nera",
+                "waterway":"river"
+            },
+            "geometry":{
+                "type":"MultiLineString",
+                "coordinates":[
+                    
+                ]
+            }
+        }
+    ]
+}
