@@ -1,6 +1,6 @@
     <x-app-layout>
         <x-slot name="title">
-            {{ __('Dashboard') }}
+            {{ __('Admin | Ubah Data '. $guestLand->nama_pemilik) }}
         </x-slot>
         <x-slot name="headerLink">
             <!-- Custom styles for this page -->
@@ -40,7 +40,7 @@
 
                         $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                             swal({
-                                title: "Warning",
+                                title: "Perhatian",
                                 text: val,
                                 icon: "warning",
                             });
@@ -49,7 +49,7 @@
                     }
                     if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                         swal({
-                            title: "Good Job",
+                            title: "Berhasil",
                             text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                             icon: "success",
                         });
@@ -69,7 +69,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Formulir Penambahan Data Tanah</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Formulir Penambahan Data Tanah {{$guestLand->nama_pemilik}}</h1>
                     {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
                 </div>
@@ -80,9 +80,6 @@
                     @csrf
                     <div class="row">
                         <div class="col-12 card">
-                            <div class="crad-header">
-                                <h4>Data Pemilik Tanah Bidang</h4>
-                            </div>
                             <div class="card-body row">
                                 <div class="col-12 my-1">
                                     <label for="">Nama</label>
@@ -131,7 +128,7 @@
                             </div>
                         </div>
 
-                        <div class="col-12 card">
+                        {{-- <div class="col-12 card">
                             <div class="card-header">
                                 <h4>Pemilihan Petugas</h4>
                                 <small>Kosongkan Jika Belum dapat ditetapkan</small>
@@ -163,12 +160,22 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-12 my-5 d-flex justify-content-end">
-                            <a href="{{ route('adminGuestLand') }}" class="btn btn-outline-primary mr-2">
-                                Back
-                            </a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            @if ($guestLand->status_proses < 4)
+
+                                @if ($guestLand->status_proses == '0')
+                                    <a class="btn btn-outline-primary mr-1" href="{{ route('adminPemilihanPetugas') }}">Kembali</a>
+                                @else
+                                    <a class="btn btn-outline-primary mr-1" href="{{ route('adminGuestLand', ['proses']) }}">Kembali</a>
+                                @endif
+
+                            @else
+                                <a href="{{ route('adminGuestLand', ['selesai']) }}" class="btn btn-outline-primary mr-2">
+                                    Kembali
+                                </a>
+                            @endif
+                            <button type="submit" class="btn btn-primary">Kirim</button>
                         </div>
                     </div>
 

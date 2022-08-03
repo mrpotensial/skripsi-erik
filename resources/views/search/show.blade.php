@@ -1,6 +1,6 @@
 <x-guest-layout>
     <x-slot name="title">
-        {{ __('BPN SEKADAU') }}
+        {{ __($guestLand->nama_pemilik) }}
     </x-slot>
     <x-slot name="headerLink">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
@@ -17,6 +17,8 @@
         </style>
     </x-slot>
     <x-slot name="footerScript">
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
@@ -124,98 +126,187 @@
         <div class="container-fluid">
 
             {{-- begin progress --}}
-            <div class="card shadow border border-secondary mb-4">
-                <div class="card-header py-3 ">
-                    <h5 class="m-0 font-weight-bold text-secondary">Progress Pengerjaan</h5>
-                    <div class="d-flex justify-content-end">
-                        @if ($guestLand->status_proses == 7)
-                            <a class="btn btn-info ml-1" href="{{ route('userDownload', [$guestLand->nib]) }}"><i
-                                    class="fas fa-download"></i></a>
-                        @endif
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <h5 class="m-0 font-weight-bold text-secondary">Progres Pengerjaan</h5>
+                        </div>
+                        <div class="col-4">
+                            <div class="d-flex justify-content-end">
+                                @if ($guestLand->status_proses == 5)
+                                    <a class="btn btn-info btn-sm ml-1" href="{{ route('userDownload', [$guestLand->nib]) }}">
+                                        <i class="fas fa-download mr-1"></i>
+                                        Download
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
 
                     @php
-                        $progres = ($guestLand->status_proses * 100) / 7;
+                        $progres = ($guestLand->status_proses * 100) / 5;
+                        if ($progres == 0) {
+                            $progres = 5;
+                        }
+
+                        $step = $guestLand->status_proses +1;
                     @endphp
                     <h4 class="small font-weight-bold">{{ $guestLand->judul_status_proses }} <span
-                            class="float-right">{{ $progres }}%</span>
+                        class="float-right">{{$step}}/6 ({{ round($progres) }}%)</span>
                     </h4>
-                    @if ($progres == 100)
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres }}%"
-                                aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    @else
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $progres }}%"
-                                aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    @endif
+                    <div class="progress mb-4">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $progres }}%"
+                            aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                     <div>
-                        <h1 id="countDown"></h1>
+                        <h3 id="countDown"></h3>
                     </div>
                 </div>
             </div>
             {{-- end progres --}}
 
             {{-- begin detail data guest --}}
-            <div class="card shadow border border-secondary mb-4">
-                <div class="card-header py-3">
-                    <h5 class="m-0 font-weight-bold text-secondary">Detail Data</h5>
-                </div>
+
+            <div class="card mb-4">
                 <div class="card-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Nama Pemilik</td>
-                                <td>{{ $guestLand->nama_pemilik }}</td>
-                            </tr>
-                            <tr>
-                                <td>Nomor Sertifikat</td>
-                                <td>{{ $guestLand->nomor_sertifikat }}</td>
-                            </tr>
-                            <tr>
-                                <td>NIB</td>
-                                <td>{{ $guestLand->nib }}</td>
-                            </tr>
-                            <tr>
-                                <td>Desa</td>
-                                <td>{{ $guestLand->village->nama_desa }}</td>
-                            </tr>
-                            <tr>
-                                <td>Kecamatan</td>
-                                <td>{{ $guestLand->village->district->nama_kecamatan }}</td>
-                            </tr>
-                            <tr>
-                                <td>Nomor Telp</td>
-                                <td>{{ $guestLand->nomor_telpon }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#detail_pemohon" aria-expanded="false" aria-controls="detail_pemohon">
+                        <i class="fas fa-square mr-3"></i>
+                        <strong>Detail Data</strong>
+                    </button>
+                    <div class="collapse mt-3 show" id="detail_pemohon">
+                        <table class="table table-hover table-sm">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nama
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nama_pemilik }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nomor Sertifikat
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nomor_sertifikat }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                NIB
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nib }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Desa
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->village->nama_desa }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Kecamatan
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->village->district->nama_kecamatan }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nomor Telepon
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nomor_telpon }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Luas Tanah
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->luas_tanah ?? "0" }} <small>m2</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {{-- end detail data guest --}}
             @if ($guestLand->user_id != null)
                 {{-- begin detail data guest --}}
-                <div class="card shadow border border-secondary mb-4">
-                    <div class="card-header py-3">
-                        <h5 class="m-0 font-weight-bold text-secondary">Detail Petugas</h5>
-                    </div>
+                <div class="card shadow mb-4">
                     <div class="card-body">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>Nama Petugas</td>
-                                    <td>{{ $guestLand->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Email</td>
-                                    <td>{{ $guestLand->user->email }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <button class="btn btn-light w-100 text-left " type="button" data-bs-toggle="collapse" data-bs-target="#detail_petugas" aria-expanded="false" aria-controls="detail_petugas">
+                            <i class="fas fa-square mr-3"></i>
+                            <strong>Detail Petugas</strong>
+                        </button>
+                        <div class="collapse mt-3" id="detail_petugas">
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-3 font-weight-bold">
+                                                    Nama Petugas
+                                                </div>
+                                                <div class="col-9">
+                                                    {{ $guestLand->user->name }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-3 font-weight-bold">
+                                                    Email
+                                                </div>
+                                                <div class="col-9">
+                                                    {{ $guestLand->user->email }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 {{-- end detail data guest --}}
@@ -223,47 +314,41 @@
 
 
             {{-- begin detail data guest --}}
-            <div class="card shadow border border-secondary mb-4">
-                <div class="card-header py-3">
-                    <h5 class="m-0 font-weight-bold text-secondary">Detail Progres Pengerjaan</h5>
-                </div>
+            <div class="card shadow mb-4">
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Status Pekerjaan</th>
-                                <th>Pembuatan</th>
-                                <th>Batas Akhir</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Status Pekerjaan</th>
-                                <th>Pembuatan</th>
-                                <th>Batas Akhir</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach ($guestLand->statusPekerjaans as $index => $status)
+                    <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#status_pengerjaan" aria-expanded="false" aria-controls="status_pengerjaan">
+                        <i class="fas fa-square mr-3"></i>
+                        <strong>Status Pengerjaan</strong>
+                    </button>
+                    <div class="collapse mt-3" id="status_pengerjaan">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-active">
                                 <tr>
-                                    <td>
-                                        <h4 class="small font-weight-bold">{{ $status->judul_pekerjaan }}
-                                        </h4>
-                                    </td>
-                                    <td>{{ $status->created_at }}</td>
-                                    <td>{{ $status->batas_waktu_pekerjaan }}</td>
+                                    <th>Status Pekerjaan</th>
+                                    <th>Waktu Pembuatan</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($guestLand->statusPekerjaans as $index => $status)
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-weight-bold">{{ $status->judul_pekerjaan }}
+                                            </h6>
+                                        </td>
+                                        <td>{{ $status->created_at->format('Y-m-d') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {{-- end detail data guest --}}
-            <hr>
+
 
             @isset($guestLand->koordinat_bidang)
                 {{-- begin map --}}
-                <div class="card shadow border border-secondary mb-4">
+                <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h5 class="m-0 font-weight-bold text-secondary">Peta Lokasi Tanah</h5>
                     </div>

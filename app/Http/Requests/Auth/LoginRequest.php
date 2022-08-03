@@ -34,8 +34,24 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
             'level' => [
                 'required',
-                Rule::in(['0', '1'])
+                Rule::in(['0', '1', '2'])
             ],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'email.required' => 'Email harus diisi',
+            'email.email' => 'Email tidak valid',
+            'password.required' => 'Password harus diisi',
+            'level.required' => 'Jabatan harus diisi',
+            'level.in' => 'Jabatan tidak valid',
         ];
     }
 
@@ -54,7 +70,9 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email salah',
+                'password' => 'Password salah',
+                'level' => 'Jabatan tidak valid',
             ]);
         }
 

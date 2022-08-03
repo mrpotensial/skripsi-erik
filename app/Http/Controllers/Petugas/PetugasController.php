@@ -15,7 +15,7 @@ class PetugasController extends Controller
     public function index()
     {
         $desa = \App\Models\Village::get();
-        $guestLands = \App\Models\GuestLand::where([['user_id', '=', \Illuminate\Support\Facades\Auth::user()->id], ['status_proses', '=', '7']])->get();
+        $guestLands = \App\Models\GuestLand::where([['user_id', '=', \Illuminate\Support\Facades\Auth::user()->id], ['status_proses', '=', '5']])->get();
         // dd($guestLands->count());
         return view('pages.petugas.dashboard')->with(compact([
             'desa',

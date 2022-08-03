@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class SearchController extends Controller
 {
@@ -35,19 +39,30 @@ class SearchController extends Controller
      */
     public function store(Request $request)
     {
-        // dd();
+        // dd('hello');
         session()->put('token', $request->_token);
-        $validated = $request->validate([
-            'keynum' => 'required|numeric',
-        ]);
+        Validator::make(
+            $request->all(),
+            [
+                'keynum' => 'required|numeric',
+            ],
+            [
+                'keynum.required' => 'Nomor Pencarian tidak boleh kosong',
+                'keynum.numeric' => 'Nomor Pencarian harus berupa angka',
+            ]
+        )->validate();
+
         $guestLand = \App\Models\GuestLand::where('nomor_sertifikat', '=', $request['keynum'])->first();
         if (is_null($guestLand)) {
             $guestLand = \App\Models\GuestLand::where('nib', '=', $request['keynum'])->first();
         }
+
         if (isset($guestLand)) {
-            return redirect()->route('SearchShow', ['id' => $guestLand->id, 'token' => $request->_token]);
+            $id = Crypt::encryptString($guestLand->nomor_sertifikat);
+            return redirect()->route('SearchShow', ['id' => $id, 'token' => $request->_token]);
         }
-        return redirect()->route('welcome');
+        // dd($guestLand);
+        return redirect()->route('welcome')->withErrors('Nomor Pencarian tidak ditemukan');
     }
 
     /**
@@ -58,10 +73,17 @@ class SearchController extends Controller
      */
     public function show($token, $id)
     {
-        // dd(session('token'));
+        // dd($id);
+        try {
+            $id = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            return back()
+                ->withErrors("Data Pemohon tidak ditemukan");
+        }
+        // dd($id);
         if (!is_null(session('token')) && $token == session('token')) {
             session()->forget('token');
-            $guestLand = \App\Models\GuestLand::find($id);
+            $guestLand = \App\Models\GuestLand::firstWhere('nomor_sertifikat', '=', $id);
             return view('search.show')->with(compact('guestLand'));
         }
         return redirect()->route('welcome');

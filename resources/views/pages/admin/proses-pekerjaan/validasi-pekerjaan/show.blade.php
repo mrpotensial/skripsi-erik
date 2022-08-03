@@ -182,25 +182,47 @@
                 </div>
                 <div class="col-xl-6 col-md-12 d-flex justify-content-end">
                     <div class="my-5 d-flex">
-                        <a class="btn btn-primary" href="{{ route('adminValidasiPekerjaan') }}"><i
+                        <a class="btn btn-primary" href="{{ route('koordinatorValidasiPekerjaan') }}"><i
                                 class="fas fa-arrow-left"></i></a>
 
-                        @if ($guestLand->status_proses == 6)
+                        @if ($guestLand->status_proses == 4)
                             <form class="d-flex ms-3"
-                                action="{{ route('adminValidasiPekerjaanUpdate', ['id' => $guestLand->id]) }}"
+                                action="{{ route('koordinatorValidasiPekerjaanUpdate', ['id' => $guestLand->id]) }}"
                                 method="post" enctype="multipart/form-data">
                                 @csrf
                                 <button type="submit" class="btn btn-primary ml-1" id="status_proses"
                                     name="status_proses" value="{{ $guestLand->status_proses + 1 }}"><i
                                         class="fas fa-check"></i></button>
-
-                                <input type="date" id="batas_waktu_pekerjaan" name="batas_waktu_pekerjaan"
-                                    class="form-control mx-3">
-
-                                <button type="submit" class="btn btn-danger ml-1" id="status_proses"
-                                    name="status_proses" value="{{ $guestLand->status_proses - 1 }}"><i
-                                        class="fas fa-trash"></i></button>
+                                <button type="button" class="btn btn-danger mx-1" data-toggle="modal" data-target="#restore">
+                                    <i class="fas fa-trash-restore"></i>
+                                </button>
                             </form>
+                            <div class="modal fade" id="restore" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="exampleModalLongTitle">Ulang Pekerjaan</h3>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="{{ route('koordinatorValidasiPekerjaanUpdate', ['id' => $guestLand->id]) }}" method="post" >
+                                            @csrf
+                                            <div class="modal-body">
+                                                <label for="">Pilih Pekerjaan</label>
+                                                <select name="status_proses" class="form-control mb-3">
+                                                    <option value="1" >Pengukuran Bidang</option>
+                                                    <option value="2" >Pembuatan Peta</option>
+                                                </select>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Keluar</button>
+                                                <button type="submit" class="btn btn-primary">Ulang</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
 
                     </div>
@@ -213,7 +235,8 @@
                 </div>
                 <div class="card-body">
                     @php
-                        $progres = ($guestLand->status_proses * 100) / 7;
+                        $progres = ($guestLand->status_proses * 100) / 5;
+                        $progres = round($progres);
                     @endphp
                     <h4 class="small font-weight-bold">{{ $guestLand->judul_status_proses }} <span
                             class="float-right">{{ $progres }}%</span>
@@ -362,6 +385,17 @@
                     @endforeach
                 </div>
             </div>
+
+            @if ($guestLand->peta_bidang)
+                <div class="card shadow border border-secondary mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="m-0 font-weight-bold text-secondary">Peta Bidang Tanah</h5>
+                    </div>
+                    <div class="row p-5 d-grid gap-3">
+                        <iframe src="{{asset('storage/'.$guestLand->peta_bidang)}}" style="width: 100%; height: 80rem" frameborder="0"></iframe>
+                    </div>
+                </div>
+            @endif
         </div>
         <!-- /.container-fluid -->
 

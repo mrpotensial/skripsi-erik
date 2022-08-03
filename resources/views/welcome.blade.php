@@ -18,6 +18,7 @@
         <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
                 integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
                 crossorigin=""></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
             // 0.0488547,109.3049425,8
             var map = L.map('map', {
@@ -33,7 +34,22 @@
             }).addTo(map);
             var marker = L.marker([0.0086341, 110.9539717]).addTo(map).bindPopup(
                 "<div class='mx-auto text-center'<h1><strong>Kementrian Agraria dan Tata Ruang / <br>Badan Pertanahan Nasional</strong></h1><br><small>Kabupaten Sekadau</small><p>Gonis Tekam, Kec. Sekadau Hilir, Kabupaten Sekadau, Kalimantan Barat 79515</p></div>"
-            ).openPopup();;
+            ).openPopup();
+
+            $(document).ready(function() {
+                if ({{ Illuminate\Support\Js::from($errors->any()) }}) {
+
+                    $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
+                        swal({
+                            title: "Perhatian!",
+                            text: val,
+                            icon: "warning",
+                        });
+                    })
+
+                }
+
+            });
         </script>
     </x-slot>
     <div id="content">
@@ -43,25 +59,22 @@
         <div class="container-fluid my-5">
 
             <!-- Page Heading -->
-            <div class="d-flex align-items-center justify-content-center mb-4 w-100 border-0">
-                <div class="card align-items-center ">
-                    <div class="card-header">
+            <div class="my-4 mx-auto ">
+                <div class="card">
+                    <div class="card-header text-center">
                         <h1>Selamat Datang di Aplikasi Monitoring Permohonan Pengukuran Bidang Tanah</h1>
                     </div>
-                    {{-- <div class="card-body">
+                    {{-- <div class="w-100">
                         <form action="{{ route('SearchStore') }}" method="POST">
                             @method('POST')
                             @csrf
-                            <div>
-                                <input id="keynum" name="keynum" type="number"
-                                    class="form-control border-bottom border-dark" placeholder="Lihat data  tanah..."
-                                    min="0">
-                            </div>
+                            <input id="keynum" name="keynum" type="number"
+                                class="form-control text-center" placeholder="Nomor Sertifikat atau NIB... ex 123"
+                                min="0">
 
                         </form>
                     </div> --}}
                 </div>
-
             </div>
 
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -72,13 +85,35 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="d-block w-100" src="{{ asset('/storage/app/1.jpeg') }}" alt="First slide">
+                        <div class="card bg-dark text-white" style="max-height: 40rem">
+                            <img src="{{ asset('/storage/app/1.jpeg') }}" class="card-img" alt="...">
+                            {{-- <div class="card-img-overlay">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">Last updated 3 mins ago</p>
+                            </div> --}}
+                        </div>
+                        {{-- <img class="d-block w-100 rounded" src="" alt="First slide"> --}}
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" src="{{ asset('/storage/app/2.jpeg') }}" alt="Second slide">
+                        <div class="card bg-dark text-white" style="max-height: 40rem">
+                            <img src="{{ asset('/storage/app/2.jpeg') }}" class="card-img" alt="...">
+                            {{-- <div class="card-img-overlay">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">Last updated 3 mins ago</p>
+                            </div> --}}
+                        </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" src="{{ asset('/storage/app/3.jpeg') }}" alt="Third slide">
+                        <div class="card bg-dark text-white" style="max-height: 40rem">
+                            <img src="{{ asset('/storage/app/3.jpeg') }}" class="card-img" alt="...">
+                            {{-- <div class="card-img-overlay">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">Last updated 3 mins ago</p>
+                            </div> --}}
+                        </div>
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -90,6 +125,7 @@
                     <span class="sr-only">Next</span>
                 </a>
             </div>
+
 
 
             <!-- Content Row -->

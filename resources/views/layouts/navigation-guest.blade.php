@@ -11,26 +11,27 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Topbar Search -->
-    <div class="navbar-nav ml-auto">
+    <div class="navbar-nav ml-start">
+        {{-- <div class="topbar-divider d-none d-sm-block"></div> --}}
         <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
             action="{{ route('SearchStore') }}" method="POST">
             @method('POST')
             @csrf
-            <div class="input-group">
-                <input id="keynum" name="keynum" type="number" class="form-control bg-light border-0 small"
-                    placeholder="Lihat data  tanah..." aria-label="Search" aria-describedby="basic-addon2"
-                    min="0">
-                <div class="input-group-append">
+            <div class="input-group rounded">
+                <div class="input-group-prepend">
                     <button class="btn btn-outline-light" type="submit">
                         <i class="fas fa-search fa-sm"></i>
                     </button>
                 </div>
+                <input id="keynum" name="keynum" type="number" class="form-control bg-light border-0 small"
+                    placeholder="Nomor Sertifikat atau NIB" aria-label="Search" aria-describedby="basic-addon2"
+                    min="0">
             </div>
         </form>
     </div>
 
     <!-- Topbar Navbar -->
-    <ul class="navbar-nav">
+    <ul class="navbar-nav ml-auto">
 
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
         <li class="nav-item dropdown no-arrow d-sm-none">
@@ -55,26 +56,42 @@
             </div>
         </li>
 
-        <div class="topbar-divider d-none d-sm-block"></div>
+        {{-- <div class="topbar-divider d-none d-sm-block"></div> --}}
+
+        <li class="nav-item">
+            <a href="{{url('/')}}" class="nav-link text-light active">
+                {{-- <span class="fas fa-user mr-1"></span> --}}
+                <h5 class="font-weight-bold">Beranda</h5>
+            </a>
+        </li>
+
+        <li class="nav-item mr-3">
+            <a href="{{route('PendaftaranCreate')}}" class="nav-link text-primary bg-light">
+                {{-- <span class="fas fa-user mr-1"></span> --}}
+                <h5 class="font-weight-bold">Pendaftaran</h5>
+            </a>
+        </li>
 
         <!-- Nav Item - User Information -->
         @auth
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-user"></i>
-                    <span class="ml-3 fw-bold">
-                        @if (Auth::user()->level == 0)
-                            {{ Auth::user()->name }} <small>Admin</small>
-                        @else
-                            {{ Auth::user()->name }} <small>Petugas</small>
-                        @endif
-                    </span>
+                @php
+                    $level = Auth::user()->level;
+                    if ($level == '0') {
+                        $level = 'admin';
+                    } elseif ($level == '1') {
+                        $level = 'validator';
+                    } else{
+                        $level = 'petugas';
+                    }
+                @endphp
+                <a class="nav-link btn-lg text-light font-weight-bold" href="{{ url('/'.$level.'/dashboard') }}"> {{ Auth::user()->name }}</a>
                 </a>
             </li>
         @endauth
         @guest
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-user"></i>
-                    <span class="ml-3 fw-bold">Login</span>
+                <a class="nav-link btn-lg text-light font-weight-bold" href="{{ route('login') }}">Masuk
                 </a>
             </li>
         @endguest

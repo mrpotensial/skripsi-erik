@@ -1,6 +1,6 @@
     <x-app-layout>
         <x-slot name="title">
-            {{ __('Edit | ' . $kecamatan->nama_kecamatan) }}
+            {{ __('Admin | Edit ' . $kecamatan->nama_kecamatan) }}
         </x-slot>
         <x-slot name="headerLink">
             <!-- Custom styles for this page -->
@@ -35,7 +35,7 @@
 
                         $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                             swal({
-                                title: "Warning",
+                                title: "Perhatian",
                                 text: val,
                                 icon: "warning",
                             });
@@ -44,7 +44,7 @@
                     }
                     if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                         swal({
-                            title: "Good Job",
+                            title: "Berhasil",
                             text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                             icon: "success",
                         });

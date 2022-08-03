@@ -35,7 +35,7 @@
 
                         $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                             swal({
-                                title: "Warning",
+                                title: "Peringatan",
                                 text: val,
                                 icon: "warning",
                             });
@@ -44,7 +44,7 @@
                     }
                     if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                         swal({
-                            title: "Good Job",
+                            title: "Berhasil",
                             text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                             icon: "success",
                         });
@@ -122,9 +122,9 @@
 
                         <div class="col-12 my-5 d-flex justify-content-end">
                             <a href="{{ route('petugasPengukuranBidang') }}" class="btn btn-outline-primary mr-2">
-                                Back
+                                Kembali
                             </a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Tambah</button>
                         </div>
                     </div>
 

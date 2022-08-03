@@ -152,7 +152,7 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
             <!-- Page Heading -->
-            <div class="row">
+            <div class="row mb-5">
                 <div class="col-xl-6 col-md-12">
                     <h1 class="h3 mb-2 text-gray-800">Data Tanah Kepemilikan {{ $guestLand->nama_pemilik }}</h1>
                     {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table
@@ -161,20 +161,58 @@
                             href="https://datatables.net">official DataTables documentation</a>.</p> --}}
                 </div>
                 <div class="col-xl-6 col-md-12 d-flex justify-content-end">
-                    <div class="my-5">
-                        <a class="btn btn-primary" href="{{ route('adminGuestLand') }}"><i
-                                class="fas fa-arrow-left"></i></a>
-                        <a class="btn btn-primary ml-1" href="{{ route('adminGuestLandCreate') }}"><i
-                                class="fas fa-plus"></i></a>
-                        <a class="btn btn-primary ml-1"
+                    <div>
+                        {{-- Back Handler --}}
+                        @if ($guestLand->status_proses < '4')
+                            @if ($guestLand->status_proses == '0')
+                                <a class="btn btn-icon btn-sm btn-primary" href="{{ route('adminPemilihanPetugas') }}"><i
+                                class="fas fa-arrow-left mr-1"></i>Kembali</a>
+                            @else
+                                <a class="btn btn-icon btn-sm btn-primary" href="{{ route('adminGuestLand', ['proses']) }}"><i
+                                class="fas fa-arrow-left mr-1"></i>Kembali</a>
+                            @endif
+                        @else
+                            <a class="btn btn-icon btn-sm btn-primary" href="{{ route('adminGuestLand', ['selesai']) }}"><i
+                                class="fas fa-arrow-left mr-1"></i>Kembali</a>
+                        @endif
+
+
+                        <a class="btn btn-icon btn-sm btn-warning ml-1"
                             href="{{ route('adminGuestLandEdit', ['id' => $guestLand->id]) }}"><i
-                                class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger ml-1"
+                                class="fas fa-edit mr-1"></i>Ubah</a>
+                        <a class="btn btn-icon btn-sm btn-danger ml-1"
                             href="{{ route('adminGuestLandDestroy', ['id' => $guestLand->id]) }}"><i
-                                class="fas fa-trash"></i></a>
-                        @if ($guestLand->status_proses == 7)
-                            <a class="btn btn-info ml-1" href="{{ route('adminDownload', [$guestLand->nib]) }}"><i
-                                    class="fas fa-download"></i></a>
+                                class="fas fa-trash mr-1"></i>Hapus</a>
+
+                        @if ($guestLand->status_proses > 3)
+                            <button type="button" class="btn btn-icon btn-info btn-sm my-1" data-toggle="modal" data-target="#showDocument">
+                                <i class="fas fa-eye mr-1"></i>
+                                Peta Bidang
+                            </button>
+
+                            <div class="modal fade" id="showDocument" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Peta Bidang </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <iframe src="{{asset('storage/'.$guestLand->peta_bidang)}}" style="width: 100%; height: 80rem" frameborder="0"></iframe>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Batal</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a class="btn btn-icon btn-sm btn-info ml-1" href="{{ route('adminDownload', [$guestLand->nib]) }}"><i
+                                    class="fas fa-download mr-1"></i>Download</a>
+
+
                         @endif
                         {{-- @if ($guestLand->status_pengerjaan == 4)
                             <a class="btn btn-primary ml-1"
@@ -185,162 +223,243 @@
                 </div>
             </div>
             {{-- begin progress --}}
-            <div class="card shadow border border-secondary mb-4">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3 ">
                     <h5 class="m-0 font-weight-bold text-secondary">Progress Pengerjaan</h5>
                 </div>
                 <div class="card-body">
                     @php
-                        $progres = ($guestLand->status_proses * 100) / 7;
+                        $progres = ($guestLand->status_proses * 100) / 5;
+                        if($progres == 0){
+                            $progres = 5;
+                        }else {
+                            $progres = round($progres);
+                        }
+                        $step = $guestLand->status_proses +1;
                     @endphp
                     <h4 class="small font-weight-bold">{{ $guestLand->judul_status_proses }} <span
-                            class="float-right">{{ $progres }}%</span>
+                            class="float-right">{{$step}}/6 ({{ round($progres) }}%)</span>
                     </h4>
-                    @if ($progres == 100)
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres }}%"
-                                aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    @else
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $progres }}%"
-                                aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    @endif
+                    <div class="progress mb-4">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ $progres }}%"
+                            aria-valuenow="{{ $progres }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                     <div>
-                        <h1 id="countDown"></h1>
+                        <h5 id="countDown"></h5>
                     </div>
                 </div>
             </div>
             {{-- end progres --}}
 
             {{-- begin detail data guest --}}
-            <div class="card shadow border border-secondary mb-4">
-                <div class="card-header py-3">
-                    <h5 class="m-0 font-weight-bold text-secondary">Detail Data</h5>
-                </div>
+            <div class="card mb-4">
                 <div class="card-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Nama Pemilik</td>
-                                <td>{{ $guestLand->nama_pemilik }}</td>
-                            </tr>
-                            <tr>
-                                <td>Nomor Sertifikat</td>
-                                <td>{{ $guestLand->nomor_sertifikat }}</td>
-                            </tr>
-                            <tr>
-                                <td>NIB</td>
-                                <td>{{ $guestLand->nib }}</td>
-                            </tr>
-                            <tr>
-                                <td>Desa</td>
-                                <td>{{ $guestLand->village->nama_desa }}</td>
-                            </tr>
-                            <tr>
-                                <td>Kecamatan</td>
-                                <td>{{ $guestLand->village->district->nama_kecamatan }}</td>
-                            </tr>
-                            <tr>
-                                <td>Nomor Telp</td>
-                                <td>{{ $guestLand->nomor_telpon }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {{-- end detail data guest --}}
-            @if ($guestLand->user_id != null)
-                {{-- begin detail data guest --}}
-                <div class="card shadow border border-secondary mb-4">
-                    <div class="card-header py-3">
-                        <h5 class="m-0 font-weight-bold text-secondary">Detail Petugas</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
+                    <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#detail_pemohon" aria-expanded="false" aria-controls="detail_pemohon">
+                        <i class="fas fa-square mr-3"></i>
+                        <strong>Detail Data</strong>
+                    </button>
+                    <div class="collapse mt-3 show" id="detail_pemohon">
+                        <table class="table table-hover table-sm">
                             <tbody>
                                 <tr>
-                                    <td>Nama Petugas</td>
-                                    <td>{{ $guestLand->user->name }}</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nama 
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nama_pemilik }}
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Email</td>
-                                    <td>{{ $guestLand->user->email }}</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nomor Sertifikat
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nomor_sertifikat }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                NIB
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nib }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Desa
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->village->nama_desa }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Kecamatan
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->village->district->nama_kecamatan }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Nomor Telepon
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->nomor_telpon }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3 font-weight-bold">
+                                                Luas Tanah
+                                            </div>
+                                            <div class="col-9">
+                                                {{ $guestLand->luas_tanah ?? "0" }} <small>m2</small>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+            {{-- end detail data guest --}}
+
+            @if ($guestLand->user_id != null)
+                {{-- begin detail data guest --}}
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <button class="btn btn-light w-100 text-left " type="button" data-bs-toggle="collapse" data-bs-target="#detail_petugas" aria-expanded="false" aria-controls="detail_petugas">
+                            <i class="fas fa-square mr-3"></i>
+                            <strong>Detail Petugas</strong>
+                        </button>
+                        <div class="collapse mt-3" id="detail_petugas">
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-3 font-weight-bold">
+                                                    Nama Petugas
+                                                </div>
+                                                <div class="col-9">
+                                                    {{ $guestLand->user->name }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-3 font-weight-bold">
+                                                    Email
+                                                </div>
+                                                <div class="col-9">
+                                                    {{ $guestLand->user->email }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 {{-- end detail data guest --}}
             @endif
 
             {{-- begin detail data guest --}}
-            <div class="card shadow border border-secondary mb-4">
-                <div class="card-header py-3">
-                    <h5 class="m-0 font-weight-bold text-secondary">Detail Progres Pengerjaan</h5>
-                </div>
+            <div class="card shadow mb-4">
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Status Pekerjaan</th>
-                                <th>Pembuatan</th>
-                                <th>Batas Akhir</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Status Pekerjaan</th>
-                                <th>Pembuatan</th>
-                                <th>Batas Akhir</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach ($guestLand->statusPekerjaans as $index => $status)
+                    <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#status_pengerjaan" aria-expanded="false" aria-controls="status_pengerjaan">
+                        <i class="fas fa-square mr-3"></i>
+                        <strong>Status Pengerjaan</strong>
+                    </button>
+                    <div class="collapse mt-3" id="status_pengerjaan">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-active">
                                 <tr>
-                                    <td>
-
-                                        <h4 class="small font-weight-bold">{{ $status->judul_pekerjaan }}
-                                        </h4>
-
-                                    </td>
-                                    <td>{{ $status->created_at }}</td>
-                                    <td>{{ $status->batas_waktu_pekerjaan }}</td>
+                                    <th>Status Pekerjaan</th>
+                                    <th>Waktu Pembuatan</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($guestLand->statusPekerjaans as $index => $status)
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-weight-bold">{{ $status->judul_pekerjaan }}
+                                            </h6>
+                                        </td>
+                                        <td>{{ $status->created_at->format('Y-m-d') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {{-- end detail data guest --}}
-            <hr>
 
             {{-- begin map --}}
             @isset($guestLand->koordinat_bidang)
-                <div class="card shadow border border-secondary mb-4">
-                    <div class="card-header py-3">
-                        <h5 class="m-0 font-weight-bold text-secondary">Peta Lokasi Tanah</h5>
-                    </div>
-                    <div class="card-body">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#peta" aria-expanded="false" aria-controls="peta">
+                        <i class="fas fa-square mr-3"></i>
+                        <strong>Peta Lokasi Tanah</strong>
+                    </button>
+                    <div class="collapse mt-3" id="peta">
                         <div id="map" name="map"></div>
                     </div>
                 </div>
+            </div>
             @endisset
             {{-- end map --}}
 
             @if ($guestLand->buktiPekerjaans->count() > 0)
-                <div class="card shadow border border-secondary mb-4">
-                    <div class="card-header py-3">
-                        <h5 class="m-0 font-weight-bold text-secondary">Bukti Pengukuran Bidang Tanah</h5>
-                    </div>
-                    <div class="row p-5 d-grid gap-3">
-                        @foreach ($guestLand->buktiPekerjaans as $bukti_pekerjaan)
-                            <div class="col-12 col-md-6 col-xl-3 card" style="width: 18rem;">
-                                <img src="{{ asset('storage/' . $bukti_pekerjaan->path) }}" class="card-img-top"
+                <div class="card shadow mb-4">
+                    <div class="card-body py-3">
+                        <button class="btn btn-light w-100  text-left " type="button" data-bs-toggle="collapse" data-bs-target="#buktipekerjaan" aria-expanded="false" aria-controls="buktipekerjaan">
+                            <i class="fas fa-square mr-3"></i>
+                            <strong>Bukti Pekerjaan</strong>
+                        </button>
+                        <div class="collapse mt-3" id="buktipekerjaan">
+                            <div class="row p-5 d-grid gap-3">
+                                @foreach ($guestLand->buktiPekerjaans as $bukti_pekerjaan)
+                                <div class="col-12 col-md-6 col-xl-3 card" style="width: 18rem;">
+                                    <img src="{{ asset('storage/' . $bukti_pekerjaan->path) }}" class="card-img-top"
                                     alt="...">
+                                </div>
+                                @endforeach
                             </div>
-                        @endforeach
+                        </div>
                     </div>
                 </div>
             @endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Petugas;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PembuatanPetaController extends Controller
 {
@@ -14,7 +15,7 @@ class PembuatanPetaController extends Controller
      */
     public function index()
     {
-        $guestLands = \App\Models\GuestLand::where([['user_id', '=', \Illuminate\Support\Facades\Auth::user()->id], ['status_proses', '=', '5']])->get();
+        $guestLands = \App\Models\GuestLand::where([['user_id', '=', \Illuminate\Support\Facades\Auth::user()->id], ['status_proses', '=', '2']])->get();
         return view('pages.petugas.proses-pekerjaan.pembuatan-peta.index')->with(compact('guestLands'));
     }
 
@@ -73,34 +74,51 @@ class PembuatanPetaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-
-        $validated = $request->validate([
-            'luas_bidang' => 'required|numeric',
-            'koordinat_bidang' => 'required|file',
-            'peta_bidang' => 'required|file|mimetypes:application/pdf',
-            'status_pengerjaan' => 'required',
-        ]);
+        Validator::make(
+            $request->all(),
+            [
+                'luas_bidang' => 'required|numeric',
+                'koordinat_bidang' => 'required|file',
+                'peta_bidang' => 'required|file|mimetypes:application/pdf',
+                'status_pengerjaan' => 'required',
+            ],
+            [
+                'luas_bidang.required' => 'Luas bidang tidak boleh kosong',
+                'luas_bidang.numeric' => 'Luas bidang harus berupa angka',
+                'koordinat_bidang.required' => 'Koordinat bidang tidak boleh kosong',
+                'koordinat_bidang.file' => 'File koordinat bidang tidak boleh kosong',
+                'peta_bidang.required' => 'Peta bidang tidak boleh kosong',
+                'peta_bidang.file' => 'File peta bidang tidak boleh kosong',
+                'peta_bidang.mimetypes' => 'File peta bidang harus berformat PDF',
+                'status_pengerjaan.required' => 'Status pengerjaan tidak boleh kosong',
+            ]
+        );
         // dd($validated);
 
-        $array = explode('.', $request->koordinat_bidang->getClientOriginalName());
-
-        if ($array['1'] !== "geojson") {
+        try {
+            $array = explode('.', $request->koordinat_bidang->getClientOriginalName());
+        } catch (\Throwable $th) {
             return back()
-                ->withErrors("file koordinat bidang not geojson format")
+                ->withErrors("file koordinat bidang kosong")
                 ->withInput();
         }
 
-        $koordinat_bidang = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang', $validated['koordinat_bidang']);
-        $peta_bidang = \Illuminate\Support\Facades\Storage::disk('public')->put('peta-bidang', $validated['peta_bidang']);
+        if ($array['1'] !== "geojson") {
+            return back()
+                ->withErrors("file koordinat bidang bukan format geojson")
+                ->withInput();
+        }
+
+        $koordinat_bidang = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang', $request['koordinat_bidang']);
+        $peta_bidang = \Illuminate\Support\Facades\Storage::disk('public')->put('peta-bidang', $request['peta_bidang']);
         // dd($peta_bidang);
 
         $guestland = \App\Models\GuestLand::find($id);
-        $guestland->luas_tanah = $validated['luas_bidang'];
+        $guestland->luas_tanah = $request['luas_bidang'];
         $guestland->koordinat_bidang = $koordinat_bidang;
         $guestland->peta_bidang = $peta_bidang;
         $guestland->judul_status_proses = "Pembuatan Peta Selesai";
-        $guestland->status_proses = $validated['status_pengerjaan'];
+        $guestland->status_proses = $request['status_pengerjaan'];
         $guestland->updated_at = now();
         $guestland->save();
 
@@ -108,8 +126,7 @@ class PembuatanPetaController extends Controller
 
         \App\Models\StatusPekerjaan::store_perubahan_data($guestland);
 
-        session(['success' => 'Berhasil Menambahkan Peta Bidang Tanah']);
-        return redirect()->route('petugasPembuatanPeta');
+        return redirect()->route('petugasDaftarTugasShow', ['id' => $guestland->id]);
     }
 
     /**

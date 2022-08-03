@@ -56,6 +56,7 @@
                 lng = $('#lng').val();
             })
 
+            
 
 
             // $(document.ready(function() {}))
@@ -69,7 +70,7 @@
         <div class="container-fluid">
 
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Data Tanah Pemohon</h1>
+            {{-- <h1 class="h3 mb-2 text-gray-800">Data Tanah Pemohon</h1> --}}
             {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                 For more information about DataTables, please visit the <a target="_blank"
                     href="https://datatables.net">official DataTables documentation</a>.</p> --}}
@@ -77,7 +78,7 @@
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    {{-- <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6> --}}
+                    <h3 class="m-0 font-weight-bold">Daftar Monitoring Pekerjaan Petuagas</h3>
                     {{-- <div class="d-flex justify-content-end">
                         <a href="{{ route('operatorGuestLandCreate') }}" class="btn btn-primary"><i
                                 class="fas fa-plus"></i></a>
@@ -88,22 +89,20 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>Pekerjaan</th>
+                                    <th>Nama Petugas</th>
+                                    <th>Total</th>
                                     <th>Pengukuran</th>
                                     <th>Peta</th>
-                                    <th>Selesai</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>Pekerjaan</th>
+                                    <th>Nama Petugas</th>
+                                    <th>Total</th>
                                     <th>Pengukuran</th>
                                     <th>Peta</th>
-                                    <th>Selesai</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -113,34 +112,27 @@
                                             $total_pekerjaan = 0;
                                             $status0 = 0;
                                             $status1 = 0;
-                                            $status2 = 0;
-                                            $status3 = 0;
-                                            $status4 = 0;
                                             foreach ($guestLands as $guestLand) {
                                                 $staff->id == $guestLand->user_id ? $total_pekerjaan++ : null;
                                                 if ($staff->id == $guestLand->user_id) {
-                                                    $guestLand->status_pengerjaan == 0 ? $status0++ : null;
-                                                    $guestLand->status_pengerjaan == 1 ? $status1++ : null;
-                                                    $guestLand->status_pengerjaan == 2 ? $status2++ : null;
-                                                    $guestLand->status_pengerjaan == 3 ? $status3++ : null;
-                                                    $guestLand->status_pengerjaan == 4 ? $status4++ : null;
+                                                    $guestLand->status_proses == 1 ? $status0++ : null;
+                                                    $guestLand->status_proses == 2 ? $status1++ : null;
                                                 }
                                             }
                                         @endphp
                                         <tr class="m-auto p-auto">
                                             <td>{{ $staff->name }}</td>
+                                            <td>{{ $total_pekerjaan }}</td>
+                                            <td>{{ $status0 }}</td>
                                             <td>{{ $status1 }}</td>
-                                            <td>{{ $status2 }}</td>
-                                            <td>{{ $status3 }}</td>
-                                            <td>{{ $status4 }}</td>
-                                            <td>
+                                            <td class="d-flex justify-content-end">
                                                 <div>
-                                                    <a class="btn btn-primary btn-sm my-1"
+                                                    <a class="btn btn-primary btn-sm btn-icon"
                                                         href="{{ route('adminPetugasShow', ['id' => $staff->id]) }}"><i
-                                                            class="fas fa-eye"></i></a>
-                                                    <a class="btn btn-primary btn-sm my-1"
+                                                            class="fas fa-eye mr-1"></i>Lihat Detail Pekerjaan</a>
+                                                    {{-- <a class="btn btn-primary btn-sm my-1"
                                                         href="{{ route('adminPetugasEdit', ['id' => $staff->id]) }}"><i
-                                                            class="fas fa-plus"></i></a>
+                                                            class="fas fa-plus"></i></a> --}}
                                                     {{-- <a class="btn btn-danger btn-sm my-1"
                                                         href="{{ route('operatorStaffDestroy', ['id' => $staff->id]) }}"><i
                                                             class="fas fa-trash"></i></a> --}}

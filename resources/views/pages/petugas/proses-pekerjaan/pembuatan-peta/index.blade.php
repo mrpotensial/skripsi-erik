@@ -102,40 +102,48 @@
         <div class="container-fluid">
 
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Pembutan Koordinat dan Peta Bidang Tanah</h1>
+            <h1 class="h3 mb-2 text-gray-800">Pembuatan Koordinat dan Peta Bidang Tanah</h1>
             {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                 For more information about DataTables, please visit the <a target="_blank"
                     href="https://datatables.net">official DataTables documentation</a>.</p> --}}
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @if (count($guestLands) > 0)
                                     @foreach ($guestLands as $index => $guestLand)
-                                        <tr class="m-auto p-auto">
+                                        <tr class="m-auto p-auto align-middle">
+                                            <td>
+                                                <div>
+                                                    <h5>
+                                                        <strong>{{ $guestLand->created_at->format('d-m-Y')}}</strong>
+                                                        {{-- <small>(<strong>{{ $guestLand->created_at->format('H:i:s') }}</strong>)</small> --}}
+                                                    </h5>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div>
                                                     <h6>Nama Pemilik :
@@ -172,8 +180,9 @@
                                             </td>
                                             <td>
                                                 @php
-                                                    $progres = ($guestLand->status_proses * 100) / 7;
+                                                    $progres = ($guestLand->status_proses * 100) / 5;
                                                 @endphp
+                                                <h3><small>Proses : </small> {{$guestLand->status_proses+1}}/6</h3>
                                                 <div class="progress mb-4">
                                                     <div class="progress-bar bg-danger" role="progressbar"
                                                         style="width: {{ $progres }}%"
@@ -182,11 +191,11 @@
                                                 </div>
 
                                             </td>
-                                            <td>
-                                                <div class="d-flex">
+                                            <td class="d-flex justify-content-end">
+                                                <div >
                                                     <a href="{{ route('petugasPembuatanPetaEdit', ['id' => $guestLand->id]) }}"
                                                         class="btn btn-primary btn-sm my-1"><i
-                                                            class="fas fa-eye"></i></a>
+                                                            class="fas fa-upload mr-1"></i>Upload Peta Bidang</a>
                                                     {{-- <form class="mr-2"
                                                         action="{{ route('staffGuestLandPengukuranBidangUpdate', ['id' => $guestLand->id]) }}"
                                                         method="post">

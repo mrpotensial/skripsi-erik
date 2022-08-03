@@ -1,6 +1,6 @@
     <x-app-layout>
         <x-slot name="title">
-            {{ __('Dashboard') }}
+            {{ __('Admin | Tambah Desa') }}
         </x-slot>
         <x-slot name="headerLink">
             <!-- Custom styles for this page -->
@@ -37,7 +37,7 @@
 
                         $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                             swal({
-                                title: "Warning",
+                                title: "Perhatian",
                                 text: val,
                                 icon: "warning",
                             });
@@ -46,7 +46,7 @@
                     }
                     if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                         swal({
-                            title: "Good Job",
+                            title: "Berhasil",
                             text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                             icon: "success",
                         });
@@ -67,7 +67,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Formulir Penambahan Data Kecamatan</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Formulir Tambah Data Kecamatan</h1>
                     {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
                 </div>
@@ -104,9 +104,9 @@
 
                         <div class="col-12 my-5 d-flex justify-content-end">
                             <a href="{{ route('adminDesa') }}" class="btn btn-outline-primary mr-2">
-                                Back
+                                Kembali
                             </a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Tambah</button>
                         </div>
                     </div>
 

@@ -27,6 +27,7 @@
         <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
                 integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
                 crossorigin=""></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
             const guestLands = {{ Illuminate\Support\Js::from($guestLands) }};
             $(document).ready(function() {
@@ -34,7 +35,7 @@
 
                     $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                         swal({
-                            title: "Warning",
+                            title: "Perhatian",
                             text: val,
                             icon: "warning",
                         });
@@ -43,7 +44,7 @@
                 }
                 if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                     swal({
-                        title: "Good Job",
+                        title: "Berhasil",
                         text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                         icon: "success",
                     });
@@ -95,6 +96,7 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+            {{-- {{dump($request->session()->all())}} --}}
 
             <!-- Page Heading -->
             <h1 class="h3 mb-2 text-gray-800">Daftar Pekerjaan</h1>
@@ -111,26 +113,36 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
-                                    <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th>Progres</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
-                                    <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th>Progres</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @if (count($guestLands) > 0)
                                     @foreach ($guestLands as $index => $guestLand)
-                                        <tr class="m-auto p-auto">
+                                        <tr class="m-auto p-auto align-middle">
+                                            <td>
+                                                <div>
+                                                    <h5>
+                                                        <strong>{{ $guestLand->created_at->format('d-m-Y')}}</strong>
+                                                        {{-- <small>(<strong>{{ $guestLand->created_at->format('H:i:s') }}</strong>)</small> --}}
+                                                    </h5>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div>
                                                     <h6>Nama Pemilik :
@@ -163,12 +175,13 @@
                                             <td>
                                                 {{-- {{ $status = count($guestLand->statusPekerjaan) }} --}}
                                                 <h5>{{ $guestLand->judul_status_proses }}</h5>
-                                                <h6 id="demo{{ $index }}"></h6>
+                                                {{-- <h6 id="demo{{ $index }}"></h6> --}}
                                             </td>
                                             <td>
                                                 @php
-                                                    $progres = ($guestLand->status_proses * 100) / 7;
+                                                    $progres = ($guestLand->status_proses * 100) / 5;
                                                 @endphp
+                                                <h3><small>Proses : </small> {{$guestLand->status_proses+1}}/6</h3>
                                                 <div class="progress mb-4">
                                                     <div class="progress-bar bg-danger" role="progressbar"
                                                         style="width: {{ $progres }}%"
@@ -177,11 +190,11 @@
                                                 </div>
 
                                             </td>
-                                            <td>
+                                            <td class="d-flex justify-content-end">
                                                 <div class="d-flex">
-                                                    <a class="btn btn-primary btn-sm my-1"
+                                                    <a class="btn btn-icon btn-primary btn-sm my-1"
                                                         href="{{ route('petugasDaftarTugasShow', ['id' => $guestLand->id]) }}"><i
-                                                            class="fas fa-eye"></i></a>
+                                                            class="fas fa-eye mr-1"></i>Lihat</a>
 
                                                 </div>
                                             </td>

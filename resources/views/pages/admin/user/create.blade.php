@@ -76,51 +76,61 @@
                     @csrf
                     <!-- Name -->
                     <div class="col-12 card">
-                        <div class="crad-header">
-                            <h4>Data User Baru</h4>
-                        </div>
                         <div class="card-body row">
-                            <div class="col-12 my-1">
+                            <div class="col-6 my-1">
                                 <label for="">Nama</label>
                                 <input type="text" id="name" name="name"
                                     class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
                                     required autofocus>
                             </div>
 
-                            <div class="col-12 my-1">
+                            <div class="col-6 my-1">
                                 <label for="">Email</label>
                                 <input type="email" id="email" name="email"
                                     class="form-control @error('email') is-invalid @enderror"
                                     value="{{ old('email') }}" required>
                             </div>
 
-                            <div class="col-6 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Password</label>
                                 <input type="password" id="password" name="password" class="form-control" required
                                     autocomplete="new-password">
                             </div>
 
-                            <div class="col-6 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Password</label>
                                 <input type="password" id="password_confirmation" name="password_confirmation"
                                     class="form-control" required>
                             </div>
 
-                            <div class="col-6 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Level User</label>
                                 <select name="level" id="level" class="form-control" required>
-                                    <option value="0">Admin</option>
-                                    <option value="1">Petugas</option>
+                                    <option value="0"
+                                    @if ($select == 'admin')
+                                        selected
+                                    @endif
+                                    >Admin</option>
+                                    <option value="1"
+                                    @if ($select == 'koordinator')
+                                        selected
+                                    @endif
+                                    >Koordinator</option>
+                                    <option value="2"
+                                    @if ($select == 'petugas')
+                                        selected
+                                    @endif
+                                    >Petugas</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-12 my-5 d-flex justify-content-end">
-                        <a href="{{ route('adminUser', ['select' => 'all']) }}" class="btn btn-outline-primary mr-2">
-                            Back
+                        <a href="{{ route('adminUser', [$select]) }}" class="btn btn-outline-primary mr-2">
+                            Kembali
                         </a>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
                     </div>
                 </form>
             </div>

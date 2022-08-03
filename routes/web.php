@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,11 +21,20 @@ Route::prefix('/')->group(function () {
         return view('welcome')->with(compact('guestLand'));
     })->name('welcome');
     //BEGIN GuestLand Controller
+
+    // Begin Pencarian
     Route::controller(\App\Http\Controllers\Guest\SearchController::class)->prefix('search/')->name('Search')->group(function () {
         // Route::get('/', 'index'); //Index Default Layout
         Route::post('/store', 'store')->name('Store'); //Get Layout Create
-        Route::get('{token}/token/{id}/show', 'show')->name('Show'); //Get Layout Create
+        Route::get('/{token}/token/{id}/show', 'show')->name('Show'); //Get Layout Create
     });
+
+    // Begin Pendaftaran
+    Route::controller(\App\Http\Controllers\Guest\PendaftaranPermohonanController::class)->prefix('pendaftaran/')->name('Pendaftaran')->group(function () {
+        Route::get('/create', 'create')->name('Create'); //Index Default Layout
+        Route::post('/store', 'store')->name('Store'); //Get Layout Create
+    });
+
     //END GuestLand Controller
     Route::get('/download/{nib}', [\App\Http\Controllers\Admin\DownloadController::class, 'download'])->name('userDownload');
 });
@@ -34,14 +43,13 @@ Route::prefix('/')->group(function () {
 Route::prefix('admin/')->middleware('auth', 'admin')->name('admin')->group(function () {
 
     Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
-
     //BEGIN GuestLand Controller
     Route::controller(\App\Http\Controllers\Admin\UserController::class)->prefix('user/')->name('User')->group(function () {
         Route::get('/{select}/select', 'index'); //Index Default Layout
-        Route::get('/create', 'create')->name('Create'); //Get Layout Create
+        Route::get('/create/{select}/select', 'create')->name('Create'); //Get Layout Create
         Route::post('/store', 'store')->name('Store'); //Get Layout Create
         Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
-        Route::get('{id}/edit', 'edit')->name('Edit'); //Get Layout Create
+        Route::get('{id}/edit/{select}/select', 'edit')->name('Edit'); //Get Layout Create
         Route::post('{id}/update', 'update')->name('Update'); //Get Layout Create
         Route::get('{id}/destroy/{type}/type', 'destroy')->name('Destroy'); //Get Layout Create
     });
@@ -49,7 +57,7 @@ Route::prefix('admin/')->middleware('auth', 'admin')->name('admin')->group(funct
 
     //BEGIN GuestLand Controller
     Route::controller(\App\Http\Controllers\Admin\GuestLandController::class)->prefix('guest-land/')->name('GuestLand')->group(function () {
-        Route::get('/', 'index'); //Index Default Layout
+        Route::get('/{type}/index', 'index'); //Index Default Layout
         Route::get('/create', 'create')->name('Create'); //Get Layout Create
         Route::post('/store', 'store')->name('Store'); //Get Layout Create
         Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
@@ -79,7 +87,7 @@ Route::prefix('admin/')->middleware('auth', 'admin')->name('admin')->group(funct
         Route::post('/store', 'store')->name('Store'); //Get Layout Create
         Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
         Route::get('{id}/edit', 'edit')->name('Edit'); //Get Layout Create
-        Route::post('{id}/update', 'update')->name('Update'); //Get Layout Create
+        Route::put('{id}/update', 'update')->name('Update'); //Get Layout Create
         Route::get('{id}/destroy', 'destroy')->name('Destroy'); //Get Layout Create
     });
     // END Admin Pemilihan Petugas Controller
@@ -144,7 +152,51 @@ Route::prefix('admin/')->middleware('auth', 'admin')->name('admin')->group(funct
     });
     //END Pengukuran Bidang Controller
 
+    //BEGIN Pengukuran Bidang Controller
+    Route::controller(\App\Http\Controllers\Admin\PekerjaanKadaluarsaController::class)->prefix('pekerjaan-kadaluarsa')->name('PekerjaanKadaluarsa')->group(function () {
+        Route::get('/', 'index'); //Index Default Layout
+        Route::get('{id}/update', 'update')->name('Update'); //Get Layout Create
+        Route::get('/destroy', 'destroy')->name('Destroy'); //Get Layout Create
+    });
+    //END Pengukuran Bidang Controller
+
     Route::get('/download/{nib}', [\App\Http\Controllers\Admin\DownloadController::class, 'download'])->name('Download');
+});
+
+Route::prefix('koordinator/')->middleware('auth', 'koordinator')->name('koordinator')->group(function () {
+
+    Route::get('/dashboard', [\App\Http\Controllers\Koordinator\KoordinatorController::class, 'index'])->name('dashboard');
+
+    //BEGIN Daftar Tugas Controller
+    Route::controller(\App\Http\Controllers\Koordinator\DaftarPekerjaanController::class)->prefix('daftar-pekerjaan')->name('DaftarPekerjaan')->group(function () {
+        Route::get('/', 'index'); //Index Default Layout
+        Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
+    });
+    //END Daftar Tugas Controller
+
+    // BEGIN Validator Pengukuran Wilayah Bidang Controller
+    Route::controller(\App\Http\Controllers\Koordinator\ValidasiPekerjaanController::class)->prefix('validasi-pekerjaan/')->name('ValidasiPekerjaan')->group(function () {
+        Route::get('/', 'index'); //Index Default Layout
+        Route::get('/create', 'create')->name('Create'); //Get Layout Create
+        Route::post('/store', 'store')->name('Store'); //Get Layout Create
+        Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
+        Route::get('{id}/edit', 'edit')->name('Edit'); //Get Layout Create
+        Route::post('{id}/update', 'update')->name('Update'); //Get Layout Create
+        Route::get('{id}/destroy', 'destroy')->name('Destroy'); //Get Layout Create
+    });
+    // END Validator Pengukuran Wilayah Bidang Controller
+
+    //BEGIN GuestLand Controller
+    Route::controller(\App\Http\Controllers\Koordinator\PetugasController::class)->prefix('petugas/')->name('Petugas')->group(function () {
+        Route::get('/', 'index'); //Index Default Layout
+        // Route::get('/create', 'create')->name('Create'); //Get Layout Create
+        // Route::post('/store', 'store')->name('Store'); //Get Layout Create
+        Route::get('{id}/show', 'show')->name('Show'); //Get Layout Create
+        Route::get('{id}/edit', 'edit')->name('Edit'); //Get Layout Create
+        Route::post('{id}/update', 'update')->name('Update'); //Get Layout Create
+        // Route::get('{id}/destroy', 'destroy')->name('Destroy'); //Get Layout Create
+    });
+    //END GuestLand Controller
 });
 
 Route::prefix('petugas/')->middleware('auth', 'petugas')->name('petugas')->group(function () {

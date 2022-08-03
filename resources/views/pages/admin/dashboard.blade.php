@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        {{ __('Dashboard') }}
+        {{ __('Dashboard ' . Auth::user()->name) }}
     </x-slot>
     <x-slot name="headerLink">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"

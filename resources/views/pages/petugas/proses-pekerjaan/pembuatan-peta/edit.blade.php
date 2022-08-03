@@ -1,6 +1,6 @@
     <x-app-layout>
         <x-slot name="title">
-            {{ __('Dashboard') }}
+            {{ __('Pembuatan Peta') }}
         </x-slot>
         <x-slot name="headerLink">
             <!-- Custom styles for this page -->
@@ -35,7 +35,7 @@
 
                         $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                             swal({
-                                title: "Warning",
+                                title: "Peringatan",
                                 text: val,
                                 icon: "warning",
                             });
@@ -44,7 +44,7 @@
                     }
                     if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                         swal({
-                            title: "Good Job",
+                            title: "Berhasil",
                             text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                             icon: "success",
                         });
@@ -101,49 +101,58 @@
                 </div>
 
                 <!-- Content Row -->
-                <form action="{{ route('petugasPembuatanPetaUpdate', ['id' => $guestLand->id]) }}" method="post"
-                    enctype="multipart/form-data">
-                    @method('POST')
-                    @csrf
-                    <div class="row">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form action="{{ route('petugasPembuatanPetaUpdate', ['id' => $guestLand->id]) }}" method="post"
+                            enctype="multipart/form-data">
+                            @method('POST')
+                            @csrf
+                            <div class="row">
 
-                        <div class="col-12 my-1">
-                            <label for="">Luas Bidang</label>
-                            <input type="number" id="luas_bidang" name="luas_bidang" class="form-control"
-                                value="{{ old('luas_bidang') }}" placeholder="Luas Total Bidang Tanah">
-                            {{-- {{ old('luas_bidang') }} --}}
-                        </div>
+                                <div class="col-12 my-1">
+                                    <label for="">Total Luas Bidang</label>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <input type="number" id="luas_bidang" name="luas_bidang" class="form-control"
+                                        value="{{ old('luas_bidang') }}" placeholder="Luas Total Bidang Tanah" min="0">
+                                        </div>
+                                        <div class="col-auto"><h3>/ m2</h3> </div>
+                                    </div>
+                                    {{-- {{ old('luas_bidang') }} --}}
+                                </div>
 
-                        <div class="col-12 row mt-5">
-                            <div class="col-6 my-1">
-                                <label for="">Koordinat Bidang Tanah</label><br>
-                                <span><small>Format File JSON/GEOJSON</small></span>
-                                <input type="file" id="koordinat_bidang" name="koordinat_bidang" class="form-control"
-                                    style="border:none" value="{{ old('koordinat_bidang') }}">
+                                <div class="col-12 row mt-5">
+                                    <div class="col-6 my-1">
+                                        <label for="">Koordinat Bidang Tanah</label><br>
+                                        <span><small>Format File JSON/GEOJSON</small></span>
+                                        <input type="file" id="koordinat_bidang" name="koordinat_bidang" class="form-control"
+                                            style="border:none" value="{{ old('koordinat_bidang') }}">
+                                    </div>
+
+                                    <div class="col-6 my-1">
+                                        <label for="">Peta Bidang Tanah</label><br>
+                                        <span><small>Format File PDF</small></span>
+                                        <input type="file" id="peta_bidang" name="peta_bidang" class="form-control"
+                                            style="border:none" value="{{ old('peta_bidang') }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 my-1 d-none">
+                                    <input type="number" class="d-none" id="status_pengerjaan" name="status_pengerjaan"
+                                        value="{{ $guestLand->status_proses + 1 }}">
+                                </div>
+
+                                <div class="col-12 my-5 d-flex justify-content-end">
+                                    <a href="{{ route('petugasPembuatanPeta') }}" class="btn btn-outline-primary mr-2">
+                                        Kembali
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </div>
                             </div>
 
-                            <div class="col-6 my-1">
-                                <label for="">Peta Bidang Tanah</label><br>
-                                <span><small>Format File PDF</small></span>
-                                <input type="file" id="peta_bidang" name="peta_bidang" class="form-control"
-                                    style="border:none" value="{{ old('peta_bidang') }}">
-                            </div>
-                        </div>
-
-                        <div class="col-12 my-1 d-none">
-                            <input type="number" class="d-none" id="status_pengerjaan" name="status_pengerjaan"
-                                value="{{ $guestLand->status_proses + 1 }}">
-                        </div>
-
-                        <div class="col-12 my-5 d-flex justify-content-end">
-                            <a href="{{ route('petugasPembuatanPeta') }}" class="btn btn-outline-primary mr-2">
-                                Back
-                            </a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
+                        </form>
                     </div>
-
-                </form>
+                </div>
 
             </div>
             <!-- /.container-fluid -->

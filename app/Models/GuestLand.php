@@ -23,6 +23,7 @@ class GuestLand extends Model
         'judul_status_proses',
         'status_proses',
         'batas_waktu_proses',
+        'created_at',
     ]; //Boleh Diisi
 
     public function user()

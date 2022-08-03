@@ -35,7 +35,7 @@
 
                     $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                         swal({
-                            title: "Warning",
+                            title: "Perhatian",
                             text: val,
                             icon: "warning",
                         });
@@ -44,7 +44,7 @@
                 }
                 if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                     swal({
-                        title: "Good Job",
+                        title: "Berhasil",
                         text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                         icon: "success",
                     });
@@ -112,26 +112,36 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @if (count($guestLands) > 0)
                                     @foreach ($guestLands as $index => $guestLand)
-                                        <tr class="m-auto p-auto">
+                                        <tr class="m-auto p-auto align-middle">
+                                            <td>
+                                                <div>
+                                                    <h5>
+                                                        <strong>{{ $guestLand->created_at->format('d-m-Y')}}</strong>
+                                                        {{-- <small>(<strong>{{ $guestLand->created_at->format('H:i:s') }}</strong>)</small> --}}
+                                                    </h5>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div>
                                                     <h6>Nama Pemilik :
@@ -168,8 +178,9 @@
                                             </td>
                                             <td>
                                                 @php
-                                                    $progres = ($guestLand->status_proses * 100) / 7;
+                                                    $progres = ($guestLand->status_proses * 100) / 5;
                                                 @endphp
+                                                <h3><small>Proses : </small> {{$guestLand->status_proses+1}}/6</h3>
                                                 <div class="progress mb-4">
                                                     <div class="progress-bar bg-danger" role="progressbar"
                                                         style="width: {{ $progres }}%"
@@ -178,10 +189,11 @@
                                                 </div>
 
                                             </td>
-                                            <td>
-                                                <div class="d-flex">
+                                            <td class="d-flex justify-content-end">
+                                                <div>
                                                     <a href="{{ route('petugasPengukuranBidangEdit', [$guestLand->id]) }}"
-                                                        class="btn btn-primary btn-sm my-1"><i class="fas fa-eye"></i>
+                                                        class="btn btn-icon btn-primary btn-sm my-1"><i class="fas fa-upload"></i>
+                                                        Upload Bukti Pengukuran
                                                     </a>
                                                 </div>
                                             </td>

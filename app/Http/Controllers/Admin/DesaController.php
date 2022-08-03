@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DesaController extends Controller
 {
@@ -38,13 +39,24 @@ class DesaController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->input());
-        $validated = $request->validate([
-            'nama_desa' => 'required|string|max:255|unique:villages',
-            'kecamatan_id' => 'required',
-            'koordinat_bidang_desa' => 'file',
-        ]);
-        // dd($request->koordinat_bidang_kecamatan);
+        Validator::make(
+            $request->all(),
+            [
+                'nama_desa' => 'required|string|max:255|unique:villages',
+                'kecamatan_id' => 'required',
+                'koordinat_bidang_desa' => 'file',
+            ],
+            [
+                'nama_desa.required' => 'Nama desa tidak boleh kosong',
+                'nama_desa.string' => 'Nama desa harus berupa string',
+                'nama_desa.max' => 'Nama desa tidak boleh lebih dari 255 karakter',
+                'nama_desa.unique' => 'Nama desa sudah ada',
+                'kecamatan_id.required' => 'Kecamatan tidak boleh kosong',
+                'koordinat_bidang_desa.file' => 'File koordinat bidang desa harus berupa geojson',
+            ]
+        )->validate();
+
+        // Pengecekan file koordinat bidang kecamatan
         $koordinat_bidang_desa = null;
         if (isset($request->koordinat_bidang_desa)) {
             $array = explode('.', $request->koordinat_bidang_desa->getClientOriginalName());
@@ -53,19 +65,20 @@ class DesaController extends Controller
                     ->withErrors("file koordinat bidang desa not geojson format")
                     ->withInput();
             }
-            $koordinat_bidang_desa = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-desa', $validated['koordinat_bidang_desa']);
+            $koordinat_bidang_desa = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-desa', $request['koordinat_bidang_desa']);
         }
+
         // dd($koordinat_bidang_kecamatan);
-        $kecamatan = \App\Models\Village::create([
-            'nama_desa' => $validated['nama_desa'],
-            'district_id' => $validated['kecamatan_id'],
+        $desa = \App\Models\Village::create([
+            'nama_desa' => $request['nama_desa'],
+            'district_id' => $request['kecamatan_id'],
             'koordinat_bidang_desa' => $koordinat_bidang_desa,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         // dd($kecamatan);s
-        session(['success' => 'Berhasil Menambahkan Data Desa']);
-        return redirect()->route('adminDesa');
+        // session(['success' => 'Berhasil Menambahkan Data Desa']);
+        return redirect()->route('adminDesa')->with('success', 'Berhasil Menambahkan Data Desa' . $request['nama_desa']);
     }
 
     /**
@@ -109,12 +122,21 @@ class DesaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->input());
-        $validated = $request->validate([
-            'nama_desa' => 'required|string|max:255',
-            'kecamatan_id' => 'required',
-            'koordinat_bidang_desa' => 'file',
-        ]);
+        Validator::make(
+            $request->all(),
+            [
+                'nama_desa' => 'required|string|max:255',
+                'kecamatan_id' => 'required',
+                'koordinat_bidang_desa' => 'file',
+            ],
+            [
+                'nama_desa.required' => 'Nama desa tidak boleh kosong',
+                'nama_desa.string' => 'Nama desa harus berupa string',
+                'nama_desa.max' => 'Nama desa tidak boleh lebih dari 255 karakter',
+                'kecamatan_id.required' => 'Kecamatan tidak boleh kosong',
+                'koordinat_bidang_desa.file' => 'File koordinat bidang desa harus berupa geojson',
+            ]
+        )->validate();
         // dd($request->koordinat_bidang_kecamatan);
         $koordinat_bidang_desa = null;
         if (isset($request->koordinat_bidang_desa)) {
@@ -124,18 +146,18 @@ class DesaController extends Controller
                     ->withErrors("file koordinat bidang desa not geojson format")
                     ->withInput();
             }
-            $koordinat_bidang_desa = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-desa', $validated['koordinat_bidang_desa']);
+            $koordinat_bidang_desa = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-desa', $request['koordinat_bidang_desa']);
         }
         // dd($koordinat_bidang_desa);
         $desa = \App\Models\Village::where('id', '=', $id)->update([
-            'nama_desa' => $validated['nama_desa'],
-            'district_id' => $validated['kecamatan_id'],
+            'nama_desa' => $request['nama_desa'],
+            'district_id' => $request['kecamatan_id'],
             'koordinat_bidang_desa' => $koordinat_bidang_desa,
             'updated_at' => now(),
         ]);
         // dd($kecamatan);s
-        session(['success' => 'Berhasil Mengubah Data Desa']);
-        return redirect()->route('adminDesa');
+        // session(['success' => 'Berhasil Mengubah Data Desa']);
+        return redirect()->route('adminDesa')->with('success', 'Berhasil Mengubah Data Desa ' . $request['nama_desa']);
     }
 
     /**
@@ -147,7 +169,7 @@ class DesaController extends Controller
     public function destroy($id)
     {
         $desa = \App\Models\Village::find($id);
-
+        $title = $desa->nama_desa;
         foreach ($desa->guestLands as $guestLand) {
             $guestLand->delete();
             foreach ($guestLand->statusPekerjaans as $statusPekerjaan) {
@@ -159,7 +181,7 @@ class DesaController extends Controller
         }
         $desa->delete();
 
-        session(['success' => 'Berhasil Menghapus Data Desa']);
-        return back();
+        // session(['success' => 'Berhasil Menghapus Data Desa']);
+        return back()->with('success', 'Berhasil Menghapus Data Desa ' . $title);
     }
 }

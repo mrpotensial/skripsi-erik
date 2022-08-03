@@ -14,7 +14,8 @@ class DaftarTugasController extends Controller
      */
     public function index()
     {
-        $guestLands = \App\Models\GuestLand::where('user_id', '=', \Illuminate\Support\Facades\Auth::user()->id)->get();
+        // dd(session()->all());
+        $guestLands = \App\Models\GuestLand::where('user_id', '=', \Illuminate\Support\Facades\Auth::user()->id)->where('status_proses', '=', 5)->get();
         return view('pages.petugas.proses-pekerjaan.daftar-tugas.index')->with(compact('guestLands'));
     }
 
@@ -47,8 +48,10 @@ class DaftarTugasController extends Controller
      */
     public function show($id)
     {
+
         // dd($id);
         $guestLand = \App\Models\GuestLand::find($id);
+
         return view('pages.petugas.proses-pekerjaan.daftar-tugas.show')->with(compact(
             'guestLand'
         ));
@@ -86,7 +89,8 @@ class DaftarTugasController extends Controller
 
         $guesland->save();
 
-        return back();
+        session(['success' => 'Berhasil Menambahkan Peta Bidang Tanah']);
+        return redirect()->route('petugasPembuatanPeta');
     }
 
     /**

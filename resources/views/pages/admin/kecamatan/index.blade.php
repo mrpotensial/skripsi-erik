@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        {{ __('Dashboard') }}
+        {{ __('Admin | Kecamatan') }}
     </x-slot>
     <x-slot name="headerLink">
         <!-- Custom styles for this page -->
@@ -35,7 +35,7 @@
 
                     $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
                         swal({
-                            title: "Warning",
+                            title: "Perhatian",
                             text: val,
                             icon: "warning",
                         });
@@ -44,7 +44,7 @@
                 }
                 if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
                     swal({
-                        title: "Good Job",
+                        title: "Berhasil",
                         text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
                         icon: "success",
                     });
@@ -69,19 +69,21 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-            <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Daftar Data Kecamatan</h1>
-            {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                For more information about DataTables, please visit the <a target="_blank"
-                    href="https://datatables.net">official DataTables documentation</a>.</p> --}}
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     {{-- <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6> --}}
-                    <div class="d-flex justify-content-end">
-                        <a href="{{ route('adminKecamatanCreate') }}" class="btn btn-primary"><i
-                                class="fas fa-plus"></i></a>
+                    <div class="row">
+                        <div class="col-9">
+                            <h1 class="h3 mb-2 text-gray-800">Daftar Data Kecamatan</h1>
+                        </div>
+                        <div class="col-3">
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ route('adminKecamatanCreate') }}" class="btn btn-icon btn-sm btn-primary"><i
+                                        class="fas fa-plus mr-1"></i> Tambah Kecamatan</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -89,14 +91,14 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Nama Daerah</th>
-                                    <th>Action</th>
+                                    <th>Nama Kecamatan</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Nama Daerah</th>
-                                    <th>Action</th>
+                                    <th>Nama Kecamatan</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -104,17 +106,36 @@
                                     @foreach ($kecamatan as $index => $value)
                                         <tr class="m-auto p-auto align-middle">
                                             <td>{{ $value->nama_kecamatan }}</td>
-                                            <td>
+                                            <td class="d-flex justify-content-end">
                                                 <div>
-                                                    {{-- <a class="btn btn-primary btn-sm my-1"
-                                                        href="{{ route('adminKecamatanShow', ['id' => $value->id]) }}"><i
-                                                            class="fas fa-eye"></i></a> --}}
-                                                    <a class="btn btn-primary btn-sm my-1"
+                                                    <a class="btn btn-icon btn-warning btn-sm my-1"
                                                         href="{{ route('adminKecamatanEdit', ['id' => $value->id]) }}"><i
-                                                            class="fas fa-edit"></i></a>
-                                                    <a class="btn btn-danger btn-sm my-1"
-                                                        href="{{ route('adminKecamatanDestroy', ['id' => $value->id]) }}"><i
-                                                            class="fas fa-trash"></i></a>
+                                                            class="fas fa-edit mr-1"></i>Ubah</a>
+
+                                                    <button type="button" class="btn btn-icon btn-danger btn-sm my-1" data-toggle="modal" data-target="#kec{{$index}}">
+                                                        <i class="fas fa-trash mr-1"></i>Hapus
+                                                    </button>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="kec{{$index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Kecamatan {{$value->nama_kecamatan}}</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Apakah anda yakin ingin mengahapus data ini?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Batal</button>
+                                                                <a class="btn btn-icon btn-danger btn-sm my-1"
+                                                                     href="{{ route('adminKecamatanDestroy', ['id' => $value->id]) }}"><i class="fas fa-trash mr-1"></i>Hapus</a>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

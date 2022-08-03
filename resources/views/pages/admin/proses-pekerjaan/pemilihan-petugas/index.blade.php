@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        {{ __('Dashboard') }}
+        {{ __('Admin | Pemilihan Petugas') }}
     </x-slot>
     <x-slot name="headerLink">
         <!-- Custom styles for this page -->
@@ -27,9 +27,31 @@
         <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
                 integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
                 crossorigin=""></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
             const guestLands = {{ Illuminate\Support\Js::from($guestLands) }};
             $(document).ready(function() {
+                // resposen Alert notifikation
+                if ({{ Illuminate\Support\Js::from($errors->any()) }}) {
+
+                        $({{ Illuminate\Support\Js::from($errors->all()) }}).each(function(i, val) {
+                            swal({
+                                title: "Perhatian",
+                                text: val,
+                                icon: "warning",
+                            });
+                        })
+
+                    }
+                    if ({{ Illuminate\Support\Js::from(session()->get('success')) }}) {
+                        swal({
+                            title: "Berhasil",
+                            text: {{ Illuminate\Support\Js::from(session()->get('success')) }},
+                            icon: "success",
+                        });
+                        {{ Illuminate\Support\Js::from(session()->forget('success')) }}
+                    }
+
                 // Set the date we're counting down to
                 for (let index = 0; index < guestLands.length; index++) {
                     const element = guestLands[index];
@@ -62,7 +84,7 @@
                         // If the count down is over, write some text
                         if (distance < 0) {
                             clearInterval(x);
-                            document.getElementById(elementId).innerHTML = "EXPIRED";
+                            document.getElementById(elementId).innerHTML = "HABIS";
                         }
                     }, 1000);
                 }
@@ -84,39 +106,49 @@
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    {{-- <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6> --}}
+                {{-- <div class="card-header py-3">
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('adminGuestLandCreate') }}" class="btn btn-primary"><i
                                 class="fas fa-plus"></i></a>
                     </div>
-                </div>
+                </div> --}}
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
                                     <th>Prorgres</th>
-                                    <th>Action</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             <tbody>
+                                {{-- {{dd($guestLands)}} --}}
                                 @if (count($guestLands) > 0)
                                     @foreach ($guestLands as $index => $guestLand)
                                         @if ($guestLand->user_id == null)
                                             <tr class="m-auto p-auto align-middle">
+                                                <td>
+                                                    <div>
+                                                        <h5>
+                                                            <strong>{{ $guestLand->created_at->format('d-m-Y')}}</strong>
+                                                            {{-- <small>(<strong>{{ $guestLand->created_at->format('H:i:s') }}</strong>)</small> --}}
+                                                        </h5>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <div>
                                                         <h6>Nama Pemilik :
@@ -148,27 +180,69 @@
                                                 </td>
                                                 <td>
                                                     <h5>{{ $guestLand->judul_status_proses }}</h5>
-                                                    <h5 id="demo{{ $index }}"></h5>
+                                                    {{-- <h5 id="demo{{ $index }}"></h5> --}}
                                                 </td>
                                                 <td>
                                                     @php
-                                                        $progres = ($guestLand->status_proses * 7) / 100;
+                                                        $progres = ($guestLand->status_proses * 100) / 5;
+                                                        if($progres == 0){
+                                                            $progres = 5;
+                                                        }
                                                     @endphp
+                                                    <h3><small>Proses : </small> {{$guestLand->status_proses+1}}/6</h3>
                                                     <div class="progress mb-4">
                                                         <div class="progress-bar bg-danger" role="progressbar"
                                                             style="width: {{ $progres }}%"
                                                             aria-valuenow="{{ $progres }}" aria-valuemin="0"
                                                             aria-valuemax="100"></div>
                                                     </div>
+
                                                 </td>
-                                                <td>
+                                                <td class="d-flex justify-content-end">
                                                     <div>
-                                                        <a class="btn btn-primary btn-sm my-1"
+                                                         <a class="btn btn-icon btn-primary btn-sm my-1"
                                                             href="{{ route('adminGuestLandShow', ['id' => $guestLand->id]) }}"><i
-                                                                class="fas fa-eye"></i></a>
-                                                        <a class="btn btn-primary btn-sm my-1"
+                                                                class="fas fa-eye mr-1"></i>Lihat</a>
+
+                                                        <button type="button" class="btn btn-icon btn-warning btn-sm my-1" data-toggle="modal" data-target="#editData{{$index}}">
+                                                            <i class="fas fa-edit mr-1"></i>Ubah
+                                                        </button>
+
+                                                        <div class="modal fade" id="editData{{$index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title" id="exampleModalLongTitle">Tambahkan Petugas</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <form action="{{ route('adminPemilihanPetugasUpdate', ['id' => $guestLand->id]) }}" method="POST" >
+                                                                        @method("PUT")
+                                                                        @csrf
+                                                                        <div class="modal-body">
+                                                                            <label for="">Pilih Petugas</label>
+                                                                            <select name="petugas" class="form-control mb-3">
+                                                                                {{-- <option class="d-none" value="" selected>Kosong</option> --}}
+                                                                                @foreach ($users as $index => $user)
+                                                                                    @if ($user->guestLands->count() < 25)
+                                                                                        <option value="{{$user->id}}">{{$user->name}} <small>({{$total_pekerjaans[$index]}})</small></option>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Keluar</button>
+                                                                            <button type="submit" class="btn btn-primary">Tambah</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- <a class="btn btn-primary btn-sm my-1"
                                                             href="{{ route('adminPemilihanPetugasEdit', ['id' => $guestLand->id]) }}"><i
-                                                                class="fas fa-edit"></i></a>
+                                                                class="fas fa-edit"></i></a> --}}
                                                     </div>
                                                 </td>
                                             </tr>

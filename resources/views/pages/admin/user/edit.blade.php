@@ -66,7 +66,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Formulir Ubah Data User</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Formulir Ubah Data {{$user->name}}</h1>
                     {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
                 </div>
@@ -76,51 +76,49 @@
                     @csrf
                     <!-- Name -->
                     <div class="col-12 card">
-                        <div class="crad-header">
-                            <h4>Ubah Data User</h4>
-                        </div>
                         <div class="card-body row">
-                            <div class="col-12 my-1">
+                            <div class="col-6 my-1">
                                 <label for="">Nama</label>
                                 <input type="text" id="name" name="name"
                                     class="form-control @error('name') is-invalid @enderror" value="{{ $user->name }}"
                                     required autofocus>
                             </div>
 
-                            <div class="col-12 my-1">
+                            <div class="col-6 my-1">
                                 <label for="">Email</label>
                                 <input type="email" id="email" name="email"
                                     class="form-control @error('email') is-invalid @enderror"
                                     value="{{ $user->email }}" required>
                             </div>
 
-                            <div class="col-6 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Password</label>
                                 <input type="password" id="password" name="password" class="form-control" required
                                     autocomplete="new-password">
                             </div>
 
-                            <div class="col-6 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Password</label>
                                 <input type="password" id="password_confirmation" name="password_confirmation"
                                     class="form-control" required>
                             </div>
 
-                            <div class="col-12 my-1">
+                            <div class="col-4 my-1">
                                 <label for="">Level User</label>
                                 <select name="level" id="level" class="form-control" required>
                                     <option value="0" @if ($user->level == '0') selected @endif>Admin</option>
-                                    <option value="1" @if ($user->level == '1') selected @endif>Petugas</option>
+                                    <option value="1" @if ($user->level == '1') selected @endif>Koordinator</option>
+                                    <option value="2" @if ($user->level == '2') selected @endif>Petugas</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-12 my-5 d-flex justify-content-end">
-                        <a href="{{ route('adminUser', ['select' => 'all']) }}" class="btn btn-outline-primary mr-2">
-                            Back
+                        <a href="{{ route('adminUser', ['select' => 'semua']) }}" class="btn btn-outline-primary mr-2">
+                            Kembali
                         </a>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Ubah</button>
                     </div>
                 </form>
             </div>

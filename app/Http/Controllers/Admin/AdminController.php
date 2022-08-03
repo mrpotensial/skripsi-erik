@@ -19,7 +19,7 @@ class AdminController extends Controller
         $desa = \App\Models\Village::get();
         $kecamatan = \App\Models\District::get();
 
-        $guestLands = \App\Models\GuestLand::where('status_proses', '=', '7')->get();
+        $guestLands = \App\Models\GuestLand::where('status_proses', '=', '5')->get();
         // dd($guestLands[0]->village);
         $petugas = \App\Models\User::where('level', '=', '1')->get();
         // dd($guestLand);

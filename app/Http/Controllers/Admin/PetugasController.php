@@ -14,8 +14,8 @@ class PetugasController extends Controller
      */
     public function index()
     {
-        $staffs = \App\Models\User::where('level', '=', '1')->get();
-        $guestLands = \App\Models\GuestLand::get();
+        $staffs = \App\Models\User::where('level', '=', '2')->get();
+        $guestLands = \App\Models\GuestLand::where('status_proses', '<', '5')->get();
         return view('pages.admin.petugas.index')->with(compact(
             'staffs',
             'guestLands'
@@ -53,7 +53,7 @@ class PetugasController extends Controller
     {
         $staff = \App\Models\User::where('id', '=', $id)->first();
         $guestLands = \App\Models\GuestLand::where('user_id', '=', $staff->id)->get();
-        return view('pages.operator.staff.show')->with(compact('staff', 'guestLands'));
+        return view('pages.admin.petugas.show')->with(compact('staff', 'guestLands'));
     }
 
     /**
@@ -66,7 +66,7 @@ class PetugasController extends Controller
     {
         $staff = \App\Models\User::where('id', '=', $id)->first();
         $guestLands = \App\Models\GuestLand::where('user_id', '=', null)->get();
-        return view('pages.operator.staff.edit')->with(compact('staff', 'guestLands'));
+        return view('pages.admin.petugas.edit')->with(compact('staff', 'guestLands'));
     }
 
     /**

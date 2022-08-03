@@ -21,6 +21,6 @@ class AdminAuthenticate
         if (Auth::check() && Auth::user()->level == 0) {
             return $next($request);
         }
-        return back();
+        return abort(404);
     }
 }

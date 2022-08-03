@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index($select)
     {
         switch ($select) {
-            case 'all':
+            case 'semua':
                 $users = \App\Models\User::get();
                 break;
 
@@ -29,15 +29,19 @@ class UserController extends Controller
                 $users = \App\Models\User::where('level', '=', '0')->get();
                 break;
 
-            case 'petugas':
+            case 'koordinator':
                 $users = \App\Models\User::where('level', '=', '1')->get();
+                break;
+
+            case 'petugas':
+                $users = \App\Models\User::where('level', '=', '2')->get();
                 break;
 
             default:
                 abort(404);;
                 break;
         }
-        return view('pages.admin.user.index')->with(compact('users'));
+        return view('pages.admin.user.index')->with(compact('users', 'select'));
     }
 
     /**
@@ -45,9 +49,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($select)
     {
-        return view('pages.admin.user.create');
+        return view('pages.admin.user.create')->with(compact('select'));
     }
 
     /**
@@ -97,10 +101,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $select)
     {
         $user = \App\Models\User::find($id);
-        return view('pages.admin.user.edit')->with(compact('user'));
+        return view('pages.admin.user.edit')->with(compact('user', 'select'));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use function PHPUnit\Framework\isNull;
 
@@ -38,31 +39,29 @@ class KecamatanController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama_kecamatan' => 'required|string|max:255|unique:districts',
-            // 'koordinat_bidang_kecamatan' => 'file',
-        ]);
-        // dd($request->koordinat_bidang_kecamatan);
-        // $koordinat_bidang_kecamatan = null;
-        // if (isset($request->koordinat_bidang_kecamatan)) {
-        //     $array = explode('.', $request->koordinat_bidang_kecamatan->getClientOriginalName());
-        //     if ($array['1'] !== "geojson") {
-        //         return back()
-        //             ->withErrors("file koordinat bidang kecamatan not geojson format")
-        //             ->withInput();
-        //     }
-        //     $koordinat_bidang_kecamatan = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-kecamatan', $validated['koordinat_bidang_kecamatan']);
-        // }
-        // dd($koordinat_bidang_kecamatan);
+        Validator::make(
+            $request->all(),
+            [
+                'nama_kecamatan' => 'required|string|max:255|unique:districts',
+                // 'koordinat_bidang_kecamatan' => 'file',
+            ],
+            [
+                'nama_kecamatan.required' => 'Nama kecamatan tidak boleh kosong',
+                'nama_kecamatan.string' => 'Nama kecamatan harus berupa string',
+                'nama_kecamatan.max' => 'Nama kecamatan tidak boleh lebih dari 255 karakter',
+                'nama_kecamatan.unique' => 'Nama kecamatan sudah ada',
+                // 'koordinat_bidang_kecamatan.file' => 'File koordinat bidang kecamatan harus berupa geojson',
+            ]
+        )->validate();
         $kecamatan = \App\Models\District::create([
-            'nama_kecamatan' => $validated['nama_kecamatan'],
+            'nama_kecamatan' => $request['nama_kecamatan'],
             // 'koordinat_bidang_kecamatan' => $koordinat_bidang_kecamatan,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         // dd($kecamatan);s
-        session(['success' => 'Berhasil Menambahkan Data Kecamatan']);
-        return redirect()->route('adminKecamatan');
+        // session(['success' => 'Berhasil Menambahkan Data Kecamatan']);
+        return redirect()->route('adminKecamatan')->with('success', 'Berhasil Menambahkan Data Kecamatan ' . $kecamatan->nama_kecamatan);
     }
 
     /**
@@ -79,8 +78,8 @@ class KecamatanController extends Controller
         if ($kecamatan->koordinat_bidang_kecamatan !== null) {
             return view('pages.admin.kecamatan.show')->with(compact('kecamatan'));
         }
-        session(['warning' => 'Data Peta Tidak Ada']);
-        return back();
+        // session(['warning' => 'Data Peta Tidak Ada']);
+        return back()->withErrors('Data Peta Tidak Ada');
     }
 
     /**
@@ -105,30 +104,27 @@ class KecamatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nama_kecamatan' => 'required|string|max:255|unique:districts',
-            // 'koordinat_bidang_kecamatan' => 'file',
-        ]);
-        // dd($request->koordinat_bidang_kecamatan);
-        // $koordinat_bidang_kecamatan = null;
-        // if (isset($request->koordinat_bidang_kecamatan)) {
-        //     $array = explode('.', $request->koordinat_bidang_kecamatan->getClientOriginalName());
-        //     if ($array['1'] !== "geojson") {
-        //         return back()
-        //             ->withErrors("file koordinat bidang kecamatan not geojson format")
-        //             ->withInput();
-        //     }
-        //     $koordinat_bidang_kecamatan = \Illuminate\Support\Facades\Storage::disk('public')->put('koordinat-bidang-kecamatan', $validated['koordinat_bidang_kecamatan']);
-        // }
-        // dd($koordinat_bidang_kecamatan);
+        Validator::make(
+            $request->all(),
+            [
+                'nama_kecamatan' => 'required|string|max:255',
+                // 'koordinat_bidang_kecamatan' => 'file',
+            ],
+            [
+                'nama_kecamatan.required' => 'Nama kecamatan tidak boleh kosong',
+                'nama_kecamatan.string' => 'Nama kecamatan harus berupa string',
+                'nama_kecamatan.max' => 'Nama kecamatan tidak boleh lebih dari 255 karakter',
+                // 'koordinat_bidang_kecamatan.file' => 'File koordinat bidang kecamatan harus berupa geojson',
+            ]
+        )->validate();
         $kecamatan = \App\Models\District::where('id', '=', $id)->update([
-            'nama_kecamatan' => $validated['nama_kecamatan'],
+            'nama_kecamatan' => $request['nama_kecamatan'],
             // 'koordinat_bidang_kecamatan' => $koordinat_bidang_kecamatan,
             'updated_at' => now(),
         ]);
         // dd($kecamatan);s
-        session(['success' => 'Berhasil Mengubah Data Kecamatan']);
-        return redirect()->route('adminKecamatan');
+        // session(['success' => 'Berhasil Mengubah Data Kecamatan']);
+        return redirect()->route('adminKecamatan')->with('success', 'Berhasil Mengubah Data Kecamatan ' . $request['nama_kecamatan']);
     }
 
     /**
@@ -140,7 +136,7 @@ class KecamatanController extends Controller
     public function destroy($id)
     {
         $kecamatan = \App\Models\District::find($id);
-
+        $title = $kecamatan->nama_kecamatan;
         foreach ($kecamatan->villages as $desa) {
             foreach ($desa->guestLands as $guestLand) {
                 $guestLand->delete();
@@ -154,7 +150,7 @@ class KecamatanController extends Controller
             $desa->delete();
         }
         $kecamatan->delete();
-        session(['success' => 'Berhasil Menghapus Data Kecamatan']);
-        return back();
+        // session(['success' => 'Berhasil Menghapus Data Kecamatan']);
+        return back()->with('success', 'Berhasil Menghapus Data Kecamatan ' . $title);
     }
 }

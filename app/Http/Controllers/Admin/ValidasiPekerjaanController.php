@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Null_;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class ValidasiPekerjaanController extends Controller
 {
@@ -14,7 +16,7 @@ class ValidasiPekerjaanController extends Controller
      */
     public function index()
     {
-        $guestLands = \App\Models\GuestLand::where('status_proses', '=', '6')->get();
+        $guestLands = \App\Models\GuestLand::where('status_proses', '=', '4')->get();
         // dd($guestLands);
         return view('pages.admin.proses-pekerjaan.validasi-pekerjaan.index')->with(compact('guestLands'));
     }
@@ -89,16 +91,22 @@ class ValidasiPekerjaanController extends Controller
         } else {
             $validated = $request->validate([
                 'status_proses' => 'required|numeric',
-                'batas_waktu_pekerjaan' => 'required|date'
+                // 'batas_waktu_pekerjaan' => 'required|date'
             ]);
             $guestLand->judul_status_proses = "Pembuatan Map Ulang";
             $guestLand->status_proses = $validated['status_proses'];
-            $guestLand->batas_waktu_proses = $validated['batas_waktu_pekerjaan'];
+            // $guestLand->batas_waktu_proses = $validated['batas_waktu_pekerjaan'];
             $guestLand->save();
-            session(['success' => 'Berhasil Menambahkan Batas Waktu Pembuatan Map Ulang']);
+
+            foreach ($$guestLand->buktiPekerjaans as $buktiPekerjaan) {
+                $buktiPekerjaan->delete();
+            }
+
+            session(['success' => 'Berhasil Menolak Pekerjaan']);
         }
         \App\Models\StatusPekerjaan::store_perubahan_data($guestLand);
 
+        // session(['success' => 'Berhasil Menyelesaikan ']);
         return redirect()->route('adminValidasiPekerjaan');
     }
 

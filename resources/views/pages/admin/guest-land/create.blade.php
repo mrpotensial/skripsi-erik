@@ -76,10 +76,10 @@
                     @method('POST')
                     @csrf
                     <div class="row">
-
                         <div class="col-12 card">
-                            <div class="crad-header">
-                                <h4>Formulir Pemilik Tanah Bidang</h4>
+                            <div class="card-header">
+                                <h4>Data Pemohon</h4>
+                                <small>Isi sesuai dengan data pemohon</small>
                             </div>
                             <div class="card-body row">
                                 <div class="col-12 my-1">
@@ -130,34 +130,33 @@
                             </div>
                         </div>
 
-                        <div class="col-12 card">
+                        <div class="col-12 card mt-5">
                             <div class="card-header">
                                 <h4>Petugas</h4>
                                 <small>Kosongkan Jika Belum dapat ditetapkan</small>
                             </div>
                             <div class="card-body row">
-                                <div class="col-6 my-1">
+                                <div class="col-12 my-1">
                                     <label for="">Pilih Petugas</label>
                                     <select id="petugas" name="petugas"
                                         class="form-control @error('petugas') is-invalid @enderror">
                                         <option value="" selected>Kosongkan</option>
-                                        @foreach ($petugas as $value)
-                                            <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                        @foreach ($petugas as $i => $value)
+                                            <option value="{{ $value->id }}">{{ $value->name }} <small>({{$total_pekerjaans[$i]}})</small></option>
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="col-6 my-1">
+                                {{-- <div class="col-6 my-1">
                                     <label for="">Batas Waktu Pekerjaan</label>
                                     <input type="date" id="batas_waktu_pekerjaan" name="batas_waktu_pekerjaan"
                                         class="form-control @error('batas_waktu_pekerjaan') is-invalid @enderror"
                                         value="{{ now() }}">
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 
                         <div class="col-12 my-5 d-flex justify-content-end">
-                            <a href="{{ route('adminGuestLand') }}" class="btn btn-outline-primary mr-2">
+                            <a href="{{ route('adminGuestLand', ['proses']) }}" class="btn btn-outline-primary mr-2">
                                 Kembali
                             </a>
                             <button type="submit" class="btn btn-primary">Tambah</button>

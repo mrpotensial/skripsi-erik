@@ -81,14 +81,19 @@ class ValidasiPekerjaanController extends Controller
         $guestLand = \App\Models\GuestLand::find($id);
 
         if ($guestLand->status_proses > $validated['status_proses']) {
-            $user_id = Null;
-            $status_label = "Pemilihan Petugas Ulang";
+            // $user_id = Null;
+            if ($validated['status_proses'] == 1) {
+                foreach ($guestLand->buktiPekerjaans as $buktiPekerjaan) {
+                    $buktiPekerjaan->delete();
+                }
+            }
+            $status_label = "Terjadi Kesalahan, Pekerjaan ditinjau ulang";
         } else {
-            $user_id = \Illuminate\Support\Facades\Auth::user()->id;
-            $status_label = "Petugas di Tetapkan";
+            // $user_id = \Illuminate\Support\Facades\Auth::user()->id;
+            $status_label = "Pekerjaan ditinjau oleh Koordinator";
         }
 
-        $guestLand->user_id = $user_id;
+        // $guestLand->user_id = $user_id;
         $guestLand->judul_status_proses = $status_label;
         $guestLand->status_proses = $validated['status_proses'];
         $guestLand->updated_at = now();
@@ -104,12 +109,18 @@ class ValidasiPekerjaanController extends Controller
         ]);
         // dd($guestLand);
 
-        if ($guestLand->status_proses == 0) {
-            session(['success' => 'Berhasil Membatalkan Pekerjaan']);
+        // session(['success' => 'Berhasil Menambahkan Pekerjaan']);
+
+        if ($guestLand->status_proses < 3) {
+            // dd('ulang');
+            session(['success' => 'Berhasil Mengulang Pekerjaan']);
+            return redirect()->route('petugasDaftarTugas');
         } else {
-            session(['success' => 'Berhasil Menambahkan Pekerjaan']);
+            // dd('Berhasil');
+            session(['success' => 'Berhasil Menyelesaikan Pekerjaaan']);
+            return redirect()->route('petugasDaftarTugas');
         }
-        return redirect()->back();
+        // dd('tak terkoneksi');
     }
 
     /**

@@ -17,6 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
+        // dd(Auth::user());
         return view('auth.login');
     }
 
@@ -26,8 +27,10 @@ class AuthenticatedSessionController extends Controller
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
+    // LoginRequest
     public function store(LoginRequest $request)
     {
+        // dd($request->all());
         $request->authenticate();
         $request->session()->regenerate();
         // return redirect()->intended(RouteServiceProvider::HOME);
@@ -35,6 +38,8 @@ class AuthenticatedSessionController extends Controller
         if (Auth::user()->level == 0) {
             return redirect()->intended(RouteServiceProvider::ADMIN);
         } elseif (Auth::user()->level == 1) {
+            return redirect()->intended(RouteServiceProvider::KOORDINATOR);
+        } elseif (Auth::user()->level == 2) {
             return redirect()->intended(RouteServiceProvider::PETUGAS);
         }
     }

@@ -29,6 +29,7 @@
                 crossorigin=""></script>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
+            const guestLands = {{ Illuminate\Support\Js::from($guestLands) }};
             $(document).ready(function() {
                 if ({{ Illuminate\Support\Js::from($errors->any()) }}) {
 
@@ -50,6 +51,42 @@
                     {{ Illuminate\Support\Js::from(session()->forget('success')) }}
                 }
 
+                // Set the date we're counting down to
+                for (let index = 0; index < guestLands.length; index++) {
+                    const element = guestLands[index];
+
+                    var countDownDate = new Date(element.batas_waktu_proses).getTime();
+
+                    countDown(countDownDate, 'demo' + index);
+                };
+
+                // Update the count down every 1 second
+                function countDown(countDownDate, elementId) {
+                    var x = setInterval(function() {
+
+                        // Get today's date and time
+                        var now = new Date().getTime();
+
+                        // Find the distance between now and the count down date
+                        var distance = countDownDate - now;
+
+                        // Time calculations for days, hours, minutes and seconds
+                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        // Output the result in an element with id="demo"
+                        document.getElementById(elementId).innerHTML = days + "d " + hours + "h " +
+                            minutes + "m " + seconds + "s ";
+
+                        // If the count down is over, write some text
+                        if (distance < 0) {
+                            clearInterval(x);
+                            document.getElementById(elementId).innerHTML = "EXPIRED";
+                        }
+                    }, 1000);
+                }
             });
         </script>
     </x-slot>
@@ -61,7 +98,7 @@
         <div class="container-fluid">
 
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Pengukurang Bidang Tanah</h1>
+            <h1 class="h3 mb-2 text-gray-800">Pemeriksaan Pekerjaan Petugas</h1>
             {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                 For more information about DataTables, please visit the <a target="_blank"
                     href="https://datatables.net">official DataTables documentation</a>.</p> --}}
@@ -76,6 +113,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
@@ -85,6 +123,7 @@
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>Waktu Pendaftaran</th>
                                     <th>Identitas Pemilik</th>
                                     <th>Berkas</th>
                                     <th>Status</th>
@@ -95,7 +134,15 @@
                             <tbody>
                                 @if (count($guestLands) > 0)
                                     @foreach ($guestLands as $index => $guestLand)
-                                        <tr class="m-auto p-auto">
+                                        <tr class="m-auto p-auto align-middle">
+                                            <td>
+                                                <div>
+                                                    <h5>
+                                                        <strong>{{ $guestLand->created_at->format('d-m-Y')}}</strong>
+                                                        {{-- <small>(<strong>{{ $guestLand->created_at->format('H:i:s') }}</strong>)</small> --}}
+                                                    </h5>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div>
                                                     <h6>Nama Pemilik :
@@ -132,8 +179,9 @@
                                             </td>
                                             <td>
                                                 @php
-                                                    $progres = ($guestLand->status_proses * 100) / 7;
+                                                    $progres = ($guestLand->status_proses * 100) / 5;
                                                 @endphp
+                                                <h3><small>Proses : </small> {{$guestLand->status_proses}}/5</h3>
                                                 <div class="progress mb-4">
                                                     <div class="progress-bar bg-danger" role="progressbar"
                                                         style="width: {{ $progres }}%"
@@ -146,7 +194,7 @@
                                                 <div class="d-flex">
                                                     <div class="mr-2">
                                                         <a class="btn btn-primary btn-sm"
-                                                            href="{{ route('adminValidasiPekerjaanShow', ['id' => $guestLand->id]) }}"><i
+                                                            href="{{ route('koordinatorValidasiPekerjaanShow', ['id' => $guestLand->id]) }}"><i
                                                                 class="fas fa-eye"></i></a>
                                                     </div>
 
