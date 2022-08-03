@@ -144,7 +144,7 @@ class GuestLandController extends Controller
             'nama_pemilik' => $validated['nama_pemilik'],
             'nomor_sertifikat' => $validated['nomor_sertifikat'],
             'nib' => $validated['nib'],
-            'village_id' => $validated['desa'],
+            'Village_id' => $validated['desa'],
             'nomor_telpon' => $validated['nomor_telpon'],
             'nomor_hak' => $validated['nomor_hak'],
             'judul_status_proses' => $status_label,
@@ -263,7 +263,7 @@ class GuestLandController extends Controller
         $guestLand->nama_pemilik = $request['nama_pemilik'];
         $guestLand->nomor_sertifikat = $request['nomor_sertifikat'];
         $guestLand->nib = $request['nib'];
-        $guestLand->village_id = $request['desa'];
+        $guestLand->Village_id = $request['desa'];
         $guestLand->nomor_telpon = $request['nomor_telpon'];
         $guestLand->nomor_hak = $request['nomor_hak'];
         // $guestLand->batas_waktu_proses = $validated['batas_waktu_pekerjaan'];

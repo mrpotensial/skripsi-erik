@@ -23,7 +23,7 @@ class PendaftaranPermohonanController extends Controller
      */
     public function create()
     {
-        $desa = \App\Models\village::all();
+        $desa = \App\Models\Village::all();
         return view('pages.guest.pendaftaran-permohonan.create')->with(compact('desa'));
     }
 
@@ -40,7 +40,7 @@ class PendaftaranPermohonanController extends Controller
         // date('Y-m-d', strtotime($date . ' + 10 days'));
 
         $data_pemohon = \App\Models\GuestLand::create($request->all());
-        
+
         // dd($data_pemohon);
         return redirect()->route('PendaftaranCreate')->with('success', 'Nomor Sertifikat : ' . $data_pemohon->nomor_sertifikat . ' / NIB : ' . $data_pemohon->nib);
     }

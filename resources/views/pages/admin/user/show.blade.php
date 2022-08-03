@@ -277,11 +277,11 @@
                             </tr>
                             <tr>
                                 <td>Desa</td>
-                                <td>{{ $guestLand->village->nama_desa }}</td>
+                                <td>{{ $guestLand->Village->nama_desa }}</td>
                             </tr>
                             <tr>
                                 <td>Kecamatan</td>
-                                <td>{{ $guestLand->village->district->nama_kecamatan }}</td>
+                                <td>{{ $guestLand->Village->district->nama_kecamatan }}</td>
                             </tr>
                             <tr>
                                 <td>Nomor Telp</td>

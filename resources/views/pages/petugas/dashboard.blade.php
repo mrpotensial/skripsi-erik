@@ -47,7 +47,7 @@
                 for (let i_user = 0; i_user < guestLands.length; i_user++) {
                     const g_user = [];
                     const el_user = guestLands[i_user];
-                    if (el_user.village_id == el_desa.id) {
+                    if (el_user.Village_id == el_desa.id) {
                         let l_user = {
                             active: false,
                             name: el_user.nama_pemilik,

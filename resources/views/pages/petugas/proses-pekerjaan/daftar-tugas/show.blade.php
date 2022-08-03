@@ -247,7 +247,7 @@
                     @php
                         $progres = ($guestLand->status_proses * 100) / 5;
                         $progres = round($progres);
-                        
+
                         $step = $guestLand->status_proses +1;
                     @endphp
                     <h4 class="small font-weight-bold">{{ $guestLand->judul_status_proses }} <span
@@ -285,7 +285,7 @@
                                     <td>
                                         <div class="row">
                                             <div class="col-3 font-weight-bold">
-                                                Nama 
+                                                Nama
                                             </div>
                                             <div class="col-9">
                                                 {{ $guestLand->nama_pemilik }}
@@ -324,7 +324,7 @@
                                                 Desa
                                             </div>
                                             <div class="col-9">
-                                                {{ $guestLand->village->nama_desa }}
+                                                {{ $guestLand->Village->nama_desa }}
                                             </div>
                                         </div>
                                     </td>
@@ -336,7 +336,7 @@
                                                 Kecamatan
                                             </div>
                                             <div class="col-9">
-                                                {{ $guestLand->village->district->nama_kecamatan }}
+                                                {{ $guestLand->Village->district->nama_kecamatan }}
                                             </div>
                                         </div>
                                     </td>

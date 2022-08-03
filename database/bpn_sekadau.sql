@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `guest_lands` (
   `nama_pemilik` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomor_sertifikat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nib` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `village_id` bigint(20) unsigned NOT NULL,
+  `Village_id` bigint(20) unsigned NOT NULL,
   `nomor_telpon` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomor_hak` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `luas_tanah` longtext COLLATE utf8mb4_unicode_ci,
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `guest_lands` (
 
 -- Dumping data for table db_aplikasi.guest_lands: ~2 rows (approximately)
 /*!40000 ALTER TABLE `guest_lands` DISABLE KEYS */;
-REPLACE INTO `guest_lands` (`id`, `user_id`, `nama_pemilik`, `nomor_sertifikat`, `nib`, `village_id`, `nomor_telpon`, `nomor_hak`, `luas_tanah`, `koordinat_bidang`, `peta_bidang`, `status_proses`, `judul_status_proses`, `batas_waktu_proses`, `created_at`, `updated_at`) VALUES
+REPLACE INTO `guest_lands` (`id`, `user_id`, `nama_pemilik`, `nomor_sertifikat`, `nib`, `Village_id`, `nomor_telpon`, `nomor_hak`, `luas_tanah`, `koordinat_bidang`, `peta_bidang`, `status_proses`, `judul_status_proses`, `batas_waktu_proses`, `created_at`, `updated_at`) VALUES
 	(3, 3, 'Fasifikus Iwan Karantika', '1023124820', '0123', 2, '089302323000', '019230', '100', 'koordinat-bidang/kD4CXEfKXwJL3y1txMsG88fH3ZQnk8elU7ciu6Op.json', 'peta-bidang/2nIu0jSyjAVAihFaaAm95Av5er3MlBC59Oxv6oIc.pdf', 5, 'Pekerjaan Selesai', '2022-08-01', '2022-08-01 14:35:43', '2022-08-01 15:31:34'),
 	(4, 4, 'Suparma', '88440042', '0909', 2, '08923023290', '92312093', '100', 'koordinat-bidang/RRdeIRreQJlq9uEkkg1tJZPL5gdLCYmk8JZbcCP0.json', 'peta-bidang/71JCuAqohJ3vHkT6V63XO9qy2iNZ6SPfWqTulLPt.pdf', 5, 'Pekerjaan Selesai', '2022-08-01', '2022-08-01 14:36:31', '2022-08-01 15:31:47');
 /*!40000 ALTER TABLE `guest_lands` ENABLE KEYS */;
@@ -121,7 +121,7 @@ REPLACE INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(22, '2019_12_14_000001_create_personal_access_tokens_table', 1),
 	(23, '2022_06_05_174750_create_guest_lands_table', 1),
 	(24, '2022_06_05_204200_create_districts_table', 1),
-	(25, '2022_06_05_204202_create_villages_table', 1),
+	(25, '2022_06_05_204202_create_Villages_table', 1),
 	(26, '2022_06_09_181157_create_status_pekerjaans_table', 1),
 	(27, '2022_06_22_143019_create_bukti_pekerjaans_table', 1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
@@ -216,8 +216,8 @@ REPLACE INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `r
 	(6, 'Syahrul anwar', 'syahrulanwar@example.com', '2022-08-01 14:18:27', '$2y$10$KQqWq9AL41HAJky9K4CQa.rqG3i17hiO7Wk1HrK3IG2P4SrlyN3Z6', 'j0RnuTLLV9', '2', '2022-08-01 14:18:27', '2022-08-01 14:18:27');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
--- Dumping structure for table db_aplikasi.villages
-CREATE TABLE IF NOT EXISTS `villages` (
+-- Dumping structure for table db_aplikasi.Villages
+CREATE TABLE IF NOT EXISTS `Villages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `district_id` bigint(20) unsigned NOT NULL,
   `nama_desa` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -225,12 +225,12 @@ CREATE TABLE IF NOT EXISTS `villages` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `villages_nama_desa_unique` (`nama_desa`)
+  UNIQUE KEY `Villages_nama_desa_unique` (`nama_desa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_aplikasi.villages: ~10 rows (approximately)
-/*!40000 ALTER TABLE `villages` DISABLE KEYS */;
-REPLACE INTO `villages` (`id`, `district_id`, `nama_desa`, `koordinat_bidang_desa`, `created_at`, `updated_at`) VALUES
+-- Dumping data for table db_aplikasi.Villages: ~10 rows (approximately)
+/*!40000 ALTER TABLE `Villages` DISABLE KEYS */;
+REPLACE INTO `Villages` (`id`, `district_id`, `nama_desa`, `koordinat_bidang_desa`, `created_at`, `updated_at`) VALUES
 	(2, 1, 'Tanjung', NULL, '2022-08-01 13:57:13', '2022-08-01 13:57:13'),
 	(3, 1, 'Mungguk', NULL, '2022-08-01 13:57:22', '2022-08-01 13:57:22'),
 	(4, 1, 'Sungai ringin', NULL, '2022-08-01 13:57:28', '2022-08-01 13:57:28'),
@@ -241,7 +241,7 @@ REPLACE INTO `villages` (`id`, `district_id`, `nama_desa`, `koordinat_bidang_des
 	(13, 2, 'Sungai sambang', NULL, '2022-08-01 14:00:33', '2022-08-01 14:01:07'),
 	(14, 2, 'Tinting boyok', NULL, '2022-08-01 14:02:03', '2022-08-01 14:02:03'),
 	(17, 3, 'Sungai lawak', NULL, '2022-08-01 14:04:21', '2022-08-01 14:04:21');
-/*!40000 ALTER TABLE `villages` ENABLE KEYS */;
+/*!40000 ALTER TABLE `Villages` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

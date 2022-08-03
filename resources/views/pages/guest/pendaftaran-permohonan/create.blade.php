@@ -106,11 +106,11 @@
 
                                 <div class="col-12 my-2">
                                     <label for="">Kelurahana Desa</label>
-                                    <select id="village_id" name="village_id"
-                                        class="form-control @error('village_id') is-invalid @enderror">
+                                    <select id="Village_id" name="Village_id"
+                                        class="form-control @error('Village_id') is-invalid @enderror">
                                         <option class="d-none" value="">Kosong</option>
                                         @foreach ($desa as $value)
-                                            <option value="{{ $value->id }}"  @if (old('village_id') == $value->id)
+                                            <option value="{{ $value->id }}"  @if (old('Village_id') == $value->id)
                                                 selected
                                             @endif>{{ $value->nama_desa }}</option>
                                         @endforeach

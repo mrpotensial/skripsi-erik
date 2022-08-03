@@ -13,7 +13,7 @@ class CreateVillagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('villages', function (Blueprint $table) {
+        Schema::create('Villages', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\district::class);
             $table->string('nama_desa')->unique();
@@ -29,6 +29,6 @@ class CreateVillagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('villages');
+        Schema::dropIfExists('Villages');
     }
 }

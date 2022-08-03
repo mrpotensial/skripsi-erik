@@ -150,10 +150,10 @@
                                                     </h6>
                                                     <div class="d-flex">
                                                         <h6 class=" mr-3">Desa
-                                                            <small><strong>{{ $guestLand->village->nama_desa }}</strong></small>
+                                                            <small><strong>{{ $guestLand->Village->nama_desa }}</strong></small>
                                                         </h6>
                                                         <h6>Kecamatan
-                                                            <small><strong>{{ $guestLand->village->district->nama_kecamatan }}</strong></small>
+                                                            <small><strong>{{ $guestLand->Village->district->nama_kecamatan }}</strong></small>
                                                         </h6>
                                                     </div>
                                                 </div>

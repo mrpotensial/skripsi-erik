@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\village;
-use App\Http\Requests\StorevillageRequest;
-use App\Http\Requests\UpdatevillageRequest;
+use App\Models\Village;
+use App\Http\Requests\StoreVillageRequest;
+use App\Http\Requests\UpdateVillageRequest;
 
 class VillageController extends Controller
 {
@@ -31,10 +31,10 @@ class VillageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorevillageRequest  $request
+     * @param  \App\Http\Requests\StoreVillageRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorevillageRequest $request)
+    public function store(StoreVillageRequest $request)
     {
         //
     }
@@ -42,10 +42,10 @@ class VillageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\village  $village
+     * @param  \App\Models\Village  $Village
      * @return \Illuminate\Http\Response
      */
-    public function show(village $village)
+    public function show(Village $Village)
     {
         //
     }
@@ -53,10 +53,10 @@ class VillageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\village  $village
+     * @param  \App\Models\Village  $Village
      * @return \Illuminate\Http\Response
      */
-    public function edit(village $village)
+    public function edit(Village $Village)
     {
         //
     }
@@ -64,11 +64,11 @@ class VillageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatevillageRequest  $request
-     * @param  \App\Models\village  $village
+     * @param  \App\Http\Requests\UpdateVillageRequest  $request
+     * @param  \App\Models\Village  $Village
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatevillageRequest $request, village $village)
+    public function update(UpdateVillageRequest $request, Village $Village)
     {
         //
     }
@@ -76,10 +76,10 @@ class VillageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\village  $village
+     * @param  \App\Models\Village  $Village
      * @return \Illuminate\Http\Response
      */
-    public function destroy(village $village)
+    public function destroy(Village $Village)
     {
         //
     }

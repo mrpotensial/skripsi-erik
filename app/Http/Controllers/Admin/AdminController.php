@@ -20,7 +20,7 @@ class AdminController extends Controller
         $kecamatan = \App\Models\District::get();
 
         $guestLands = \App\Models\GuestLand::where('status_proses', '=', '5')->get();
-        // dd($guestLands[0]->village);
+        // dd($guestLands[0]->Village);
         $petugas = \App\Models\User::where('level', '=', '1')->get();
         // dd($guestLand);
         // dd($petugas);
@@ -38,7 +38,7 @@ class AdminController extends Controller
         );
         // $guestLands = json_encode($guestLands);
         // dd(url());
-        // dd($kecamatan->villages);
+        // dd($kecamatan->Villages);
         return view('pages.admin.dashboard')->with(compact('count', 'guestLands', 'kecamatan', 'desa'));
     }
 

@@ -42,7 +42,7 @@ class DesaController extends Controller
         Validator::make(
             $request->all(),
             [
-                'nama_desa' => 'required|string|max:255|unique:villages',
+                'nama_desa' => 'required|string|max:255|unique:Villages',
                 'kecamatan_id' => 'required',
                 'koordinat_bidang_desa' => 'file',
             ],

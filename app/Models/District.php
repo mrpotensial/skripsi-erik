@@ -10,7 +10,7 @@ class District extends Model
     use HasFactory;
     protected $fillable = ['nama_kecamatan', 'koordinat_bidang_kecamatan'];
 
-    public function villages()
+    public function Villages()
     {
         return $this->hasMany(\App\Models\Village::class);
     }

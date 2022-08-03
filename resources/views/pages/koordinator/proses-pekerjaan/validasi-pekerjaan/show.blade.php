@@ -348,7 +348,7 @@
                                                 Desa
                                             </div>
                                             <div class="col-9">
-                                                {{ $guestLand->village->nama_desa }}
+                                                {{ $guestLand->Village->nama_desa }}
                                             </div>
                                         </div>
                                     </td>
@@ -360,7 +360,7 @@
                                                 Kecamatan
                                             </div>
                                             <div class="col-9">
-                                                {{ $guestLand->village->district->nama_kecamatan }}
+                                                {{ $guestLand->Village->district->nama_kecamatan }}
                                             </div>
                                         </div>
                                     </td>

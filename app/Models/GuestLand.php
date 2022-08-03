@@ -13,7 +13,7 @@ class GuestLand extends Model
         'nama_pemilik',
         'nomor_sertifikat',
         'nib',
-        'village_id',
+        'Village_id',
         'district_id',
         'nomor_telpon',
         'nomor_hak',
@@ -36,7 +36,7 @@ class GuestLand extends Model
         return $this->belongsTo(\App\Models\District::class);
     }
 
-    public function village()
+    public function Village()
     {
         return $this->belongsTo(\App\Models\Village::class);
     }

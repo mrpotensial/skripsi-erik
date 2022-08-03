@@ -137,7 +137,7 @@ class KecamatanController extends Controller
     {
         $kecamatan = \App\Models\District::find($id);
         $title = $kecamatan->nama_kecamatan;
-        foreach ($kecamatan->villages as $desa) {
+        foreach ($kecamatan->Villages as $desa) {
             foreach ($desa->guestLands as $guestLand) {
                 $guestLand->delete();
                 foreach ($guestLand->statusPekerjaans as $statusPekerjaan) {
